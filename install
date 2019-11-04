@@ -7,9 +7,6 @@ HOMEBREW_REPOSITORY = "/usr/local/Homebrew".freeze
 HOMEBREW_CACHE = "#{ENV["HOME"]}/Library/Caches/Homebrew".freeze
 BREW_REPO = "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git".freeze
 
-# addition core repo setting
-CORE_OFFICIAL_REMOTE = "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git".freeze
-
 # TODO: bump version when new macOS is released
 MACOS_LATEST_SUPPORTED = "10.15".freeze
 # TODO: bump version when new macOS is released
