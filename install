@@ -5,7 +5,7 @@
 HOMEBREW_PREFIX = "/usr/local".freeze
 HOMEBREW_REPOSITORY = "/usr/local/Homebrew".freeze
 HOMEBREW_CACHE = "#{ENV["HOME"]}/Library/Caches/Homebrew".freeze
-BREW_REPO = "https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git".freeze
+BREW_REPO = "https://mirrors.ustc.edu.cn/brew.git".freeze
 
 # TODO: bump version when new macOS is released
 MACOS_LATEST_SUPPORTED = "10.15".freeze
