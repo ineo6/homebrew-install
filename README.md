@@ -9,26 +9,13 @@
 | homebrew-cask | 提供 macOS 应用和大型二进制文件的安装 |
 | homebrew-bottles | 预编译二进制软件包 |
 
-## Homebrew 安装（简版）
-
-### 安装 Homebrew (macOS)
-
-```bash
-/bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install.sh)"
-```
-
-### 卸载 Homebrew
-
-```bash
-/bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/uninstall.sh)"
-```
-
 ### 沟通反馈
 
 欢迎加入微信群，获得最新动态。
 
 ![湖中剑-hb.png](https://i.loli.net/2021/01/03/sXGryYHa3JhB9QL.png)
 
+文章也可以到[知乎](https://zhuanlan.zhihu.com/p/90508170)查阅。
 
 <h2 id='part1'>1. 脚本说明</h2>
 
@@ -54,7 +41,8 @@ curl: (7) Failed to connect to raw.githubusercontent.com port 443: Operation tim
 >
 > 另外也可以采用写入`hosts`的方式，可以一定程度解决`GitHub`资源无法访问的问题，我也写了一篇操作文章，有需要可以阅读下。
 
-http://idayer.com/speed-github-githubusercontent-page-with-hosts/
+[解决GitHub网页githubusercontent地址无法访问问题
+](http://idayer.com/speed-github-githubusercontent-page-with-hosts/)
 
 <h2 id='part2'>2. 安装说明</h2>
 
