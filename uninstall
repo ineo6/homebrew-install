@@ -1,8 +1,8 @@
 #!/usr/bin/ruby
 
 STDERR.print <<EOS
-Warning: The Ruby Homebrew uninstaller is now deprecated and has been rewritten in
-Bash. Please migrate to the following command:
+Warning: Ruby版本Homebrew安装脚本已被废弃，新版脚本使用Bash重写。
+请使用以下命令:
   /bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/uninstall.sh)"
 
 EOS
