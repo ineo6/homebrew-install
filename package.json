@@ -1,0 +1,26 @@
+{
+  "name": "homebrew-install",
+  "version": "1.0.0",
+  "description": "Install Homebrew (on macOS or Linux)",
+  "main": "",
+  "scripts": {
+    "make": "node ./bin/update.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ineo6/homebrew-install.git"
+  },
+  "author": "ineo6",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/ineo6/homebrew-install/issues"
+  },
+  "homepage": "https://github.com/ineo6/homebrew-install#readme",
+  "devDependencies": {
+    "chalk": "^4.1.0",
+    "download-git-repo": "^3.0.2",
+    "fs-extra": "^9.0.1",
+    "ora": "^5.2.0"
+  }
+}
