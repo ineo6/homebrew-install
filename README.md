@@ -1,5 +1,7 @@
 # Homebrew安装、设置镜像教程
 
+[![Actions Status](https://github.com/ineo6/homebrew-install/workflows/GitHub Actions CI/badge.svg)](https://github.com/ineo6/homebrew-install/actions)
+
 `Homebrew`是一款包管理工具，目前支持`macOS`和`linux`系统。主要有四个部分组成: `brew`、`homebrew-core` 、`homebrew-cask`、`homebrew-bottles`。
 
 | 名称  | 说明 |
