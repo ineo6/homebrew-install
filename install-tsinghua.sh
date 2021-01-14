@@ -37,7 +37,7 @@ if [[ -z "${HOMEBREW_ON_LINUX-}" ]]; then
   fi
   HOMEBREW_CACHE="${HOME}/Library/Caches/Homebrew"
   #changed HOMEBREW_CORE_GIT_REMOTE="https://github.com/Homebrew/homebrew-core"
-  HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+  HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
 
   STAT="stat -f"
   CHOWN="/usr/sbin/chown"
@@ -50,7 +50,7 @@ else
   HOMEBREW_PREFIX_DEFAULT="/home/linuxbrew/.linuxbrew"
   HOMEBREW_CACHE="${HOME}/.cache/Homebrew"
   #changed HOMEBREW_CORE_GIT_REMOTE="https://github.com/Homebrew/linuxbrew-core"
-  HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+  HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
 
   STAT="stat --printf"
   CHOWN="/bin/chown"
@@ -59,7 +59,7 @@ else
   TOUCH="/bin/touch"
 fi
 #changed HOMEBREW_BREW_GIT_REMOTE="https://github.com/Homebrew/brew"
-HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
 
 # TODO: bump version when new macOS is released or announced
 MACOS_NEWEST_UNSUPPORTED="12.0"
