@@ -2,10 +2,25 @@
   "name": "homebrew-install",
   "version": "1.0.0",
   "description": "Install Homebrew (on macOS or Linux)",
-  "main": "",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
-    "make": "node ./bin/update.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "dumi dev",
+    "build": "dumi build",
+    "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
+    "make": "node ./bin/update.js"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx,less,md,json}": [
+      "prettier --write"
+    ],
+    "*.ts?(x)": [
+      "prettier --parser=typescript --write"
+    ]
   },
   "repository": {
     "type": "git",
@@ -20,7 +35,12 @@
   "devDependencies": {
     "chalk": "^4.1.0",
     "download-git-repo": "^3.0.2",
+    "dumi": "^1.0.12",
     "fs-extra": "^9.0.1",
-    "ora": "^5.2.0"
+    "lint-staged": "^10.0.7",
+    "ora": "^5.3.0",
+    "prettier": "^1.19.1",
+    "sitemap": "^6.3.5",
+    "yorkie": "^2.0.0"
   }
 }
