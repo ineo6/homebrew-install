@@ -27,7 +27,7 @@ export default defineConfig({
     ],
   },
   analytics: {
-    ga: 'G-K8PPBR74RE',
+    ga: 'UA-39288503-8',
     baidu: 'be934bce3f81621badc0bb5b581ab622',
   },
   sitemap: {
