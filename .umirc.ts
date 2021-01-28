@@ -14,7 +14,7 @@ export default defineConfig({
     '/guide': [
       {
         title: '介 绍',
-        children: ['/guide', '/guide/how-it-works', '/guide/start'],
+        children: ['/guide/index', '/guide/how-it-works', '/guide/start'],
       },
       {
         title: 'M1芯片 ',
