@@ -1,0 +1,34 @@
+@import './variables.less';
+
+.@{prefix}-layout-notice {
+  position: fixed;
+  bottom: 40px;
+  right: 20px;
+  z-index: 19;
+  box-sizing: border-box;
+  width: @s-toc-width;
+  height: 180px;
+  background-color: #fff;
+  border: 1px solid #0074af;
+  border-radius: 4px;
+  box-shadow: 0 0 4px 4px #fff;
+  font-size: 12px;
+  text-align: center;
+  overflow: hidden;
+
+  &-qr {
+    width: @s-toc-width - 2;
+    height: @s-toc-width - 2;
+    background: url(@qr) no-repeat 100%;
+    background-size: 100% 100%;
+  }
+
+  &-close {
+    font-size: 18px;
+    color: #999;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    cursor: pointer;
+  }
+}

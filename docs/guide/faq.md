@@ -1,8 +1,12 @@
+---
+order: 4
+---
+
 # FAQ
 
 ## M1 芯片 Mac 如何安装
 
-`Homebrew`已支持在`arm`上安装，但是一些软件兼容性还有待更新，官方查阅地址可看[说明](https://github.com/Homebrew/brew/issues/7857)。
+`Homebrew`已支持在`arm`上安装，但是一些软件兼容性还有待更新，官方查阅地址可看 [说明](https://github.com/Homebrew/brew/issues/7857) 。
 
 你可以考虑安装`x86`版本保持兼容性。
 
@@ -28,7 +32,7 @@ Use '--' to separate paths from revisions, like this:
 
 解决方案：
 
-- 根据文章[解决 GitHub 网页 githubusercontent 地址无法访问问题][hosts]，给`github.com`域名加速
+- 根据文章 [GitHub 访问加速指南][hosts] ，给`github.com`域名加速
 - 通过代理访问
 
 ## 设置镜像无效，安装还是很慢
@@ -97,3 +101,5 @@ To retry an incomplete download, remove the file above.
 
 - `/bin/bash` => `bash` => `.bash_profile`
 - `/bin/zsh` => `zsh` => `.zprofile`
+
+[hosts]: https://mp.weixin.qq.com/s/gFNP2Pk81vg7nE1XsDingg

@@ -5,6 +5,7 @@ import Navbar from 'dumi-theme-default/src/components/Navbar';
 import SideMenu from 'dumi-theme-default/src/components/SideMenu';
 import SlugList from 'dumi-theme-default/src/components/SlugList';
 import SearchBar from 'dumi-theme-default/src/components/SearchBar';
+import Notice from './Notice';
 import './style/layout.less';
 
 const Hero = hero => (
@@ -121,6 +122,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
           />
         )}
       </div>
+      <Notice />
     </div>
   );
 };
