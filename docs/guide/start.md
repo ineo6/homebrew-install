@@ -9,7 +9,7 @@ order: 3
 ## 安装说明
 
 ```shell
-/bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install.shell)"
+/bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install.sh)"
 ```
 
 如果命令执行中卡在下面信息：
