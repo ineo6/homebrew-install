@@ -55,14 +55,14 @@ Use '--' to separate paths from revisions, like this:
 zsh
 
 ```shell
-echo export PATH=/opt/homebrew/bin:$PATH >> ～/.zprofile
+echo export PATH=/opt/homebrew/bin:$PATH >> ~/.zprofile
 source ~/.zprofile
 ```
 
 bash
 
 ```shell
-echo export PATH=/opt/homebrew/bin:$PATH >> ～/.bash_profile
+echo export PATH=/opt/homebrew/bin:$PATH >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
@@ -71,14 +71,14 @@ source ~/.bash_profile
 zsh
 
 ```shell
-echo export PATH=/usr/local/bin:$PATH >> ～/.zprofile
+echo export PATH=/usr/local/bin:$PATH >> ~/.zprofile
 source ~/.zprofile
 ```
 
 bash
 
 ```shell
-echo export PATH=/usr/local/bin:$PATH >> ～/.bash_profile
+echo export PATH=/usr/local/bin:$PATH >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
