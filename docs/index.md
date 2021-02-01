@@ -9,6 +9,8 @@ hero:
 footer: Open-source MIT Licensed | Copyright © 2021<br />Powered by [Neo](https://github.com/ineo6)
 ---
 
+<h1 style="display: none">镜像快速安装Homebrew教程</h1>
+
 <Center><h2>快速安装 Homebrew</h2></Center>
 
 ```shell script
