@@ -35,6 +35,8 @@ order: 1
 
 <img src="https://i.loli.net/2021/01/03/sXGryYHa3JhB9QL.png" width="600" alt="湖中剑-homebrew" />
 
+如果安装遇到问题，强烈建议先通过 [FAQ](/guide/faq/) 自查，新问题的解决方案会持续更新。
+
 [github]: https://github.com/ineo6/homebrew-install
 [issues]: https://github.com/ineo6/homebrew-install/issues
 [pulls]: https://github.com/ineo6/homebrew-install/pulls

@@ -17,6 +17,9 @@ const Notice: React.FC<NoticeProps> = () => {
           style={{ fontSize: '14px', fontWeight: 'bold', paddingTop: '4px' }}
         >
           需要帮助？
+          <div style={{ fontSize: '12px', color: '#454d64' }}>
+            建议先浏览 <a href="/guide/faq/">FAQ</a>
+          </div>
         </div>
         <div className="__dumi-default-layout-notice-qr" />
         <div>扫码回复"brew"进群</div>

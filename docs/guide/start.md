@@ -157,6 +157,8 @@ source ~/.zprofile
 
 <img src="https://i.loli.net/2021/01/03/sXGryYHa3JhB9QL.png" width="600" alt="湖中剑-homebrew" />
 
+如果安装遇到问题，强烈建议先通过 [FAQ](/guide/faq/) 自查，新问题的解决方案会持续更新。
+
 ## 如果对您有帮助
 
 分享、收藏，能让更多人能发现文章，这也是对我的认可和鼓励，谢谢。
@@ -167,3 +169,4 @@ source ~/.zprofile
 - [中科大源](http://mirrors.ustc.edu.cn/help/brew.git.html)
 
 [issues]: https://github.com/ineo6/homebrew-install/issues
+[pulls]: https://github.com/ineo6/homebrew-install/pulls

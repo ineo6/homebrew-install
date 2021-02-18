@@ -102,4 +102,35 @@ To retry an incomplete download, remove the file above.
 - `/bin/bash` => `bash` => `.bash_profile`
 - `/bin/zsh` => `zsh` => `.zprofile`
 
+## Xcode Command Line 安装问题
+
+错误如下：
+
+```
+xcode-select: error: invalid developer directory '/Library/Developer/CommandLineTools'
+Failed during: /usr/bin/sudo /usr/bin/xcode-select --switch /Library/Developer/CommandLineTools
+```
+
+这是因为`CommandLineTools`未安装的原因，可以通过命令安装：
+
+```shell
+xcode-select --install
+```
+
+如果提示"不能下载该软件，因为网络出现问题"，可以在官网下载安装。
+
+1. 打开 https://developer.apple.com/download/more/
+2. 搜索 Command Line
+
+因为这里罗列的所有的版本，所以我们还需要确定支持的版本，我们这样操作：
+
+1. 确定当前系统版本
+2. 打开`App Store`搜索`Xcode`
+   ![WX20210218-184737@2x.png](https://i.loli.net/2021/02/18/9hWIP8sQ7tYFOvS.png)
+
+3. 点击"版本历史记录"找到支持你的系统版本的`Xcode`版本号
+   ![WX20210218-184755@2x.png](https://i.loli.net/2021/02/18/4d1wtirp8Wxky5e.png)
+
+举例子我的电脑是`Big Sur 11.2`，在版本记录里看到`12.4`就是`Xcode`对应的版本号，然后我们找到"Command Line Tools for Xcode 12.4"下载。
+
 [hosts]: https://mp.weixin.qq.com/s/gFNP2Pk81vg7nE1XsDingg
