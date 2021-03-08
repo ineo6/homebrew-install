@@ -4,6 +4,13 @@ order: 4
 
 # FAQ
 
+## No.1 的小秘籍
+
+遇到解决不了的问题，先删除`homebrew`目录再重新运行脚本安装。
+
+- x86 上安装目录： /usr/local/Homebrew/
+- arm 上安装目录： /opt/homebrew
+
 ## M1 芯片 Mac 如何安装
 
 `Homebrew`已支持在`arm`上安装，但是一些软件兼容性还有待更新，官方查阅地址可看 [说明](https://github.com/Homebrew/brew/issues/7857) 。
@@ -32,6 +39,7 @@ Use '--' to separate paths from revisions, like this:
 
 解决方案：
 
+- 删除`/usr/local/Homebrew`重试
 - 根据文章 [GitHub 访问加速指南][hosts] ，给`github.com`域名加速
 - 通过代理访问
 
