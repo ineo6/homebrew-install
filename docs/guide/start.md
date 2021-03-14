@@ -12,6 +12,8 @@ order: 3
 /bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install.sh)"
 ```
 
+> 默认使用中科大源，如果需要换源参考 [换源](/guide/change-source/)。
+
 如果命令执行中卡在下面信息：
 
 ```shell
@@ -46,6 +48,8 @@ brew update
 ```
 
 <h2 id='part3'>设置镜像</h2>
+
+> 更新：强烈建议使用[镜像助手](/guide/change-source/)，你可以自助获取镜像脚本，目前支持中科大、清华、腾讯、北京外国语镜像源。
 
 ### 中科大源
 
@@ -97,16 +101,6 @@ source ~/.bash_profile
 ```
 
 > 注意：上述区别仅仅是`.zprofile`和`.bash_profile`不同，上下文如有再次提及编辑`.zprofile`，均按此方法判断具体操作的文件。
-
-如果想使用清华源：
-
-```shell
-把
-https://mirrors.ustc.edu.cn/homebrew-bottles
-
-替换为
-https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles
-```
 
 至此，安装和设置操作都完成了。
 

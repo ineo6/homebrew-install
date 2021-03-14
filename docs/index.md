@@ -5,7 +5,7 @@ hero:
   image: /images/homebrew-256x256.png
   actions:
     - text: 快速开始
-      link: /guide/
+      link: /guide/start/
 footer: Open-source MIT Licensed | Copyright © 2021<br />Powered by [Neo](https://github.com/ineo6)
 ---
 
@@ -17,7 +17,8 @@ footer: Open-source MIT Licensed | Copyright © 2021<br />Powered by [Neo](https
 /bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install.sh)"
 ```
 
-<Center>将以上命令粘贴至终端。</Center>
-<Center>脚本内置<a target="_blank" href="http://mirrors.ustc.edu.cn/help/brew.git.html">中科大镜像</a>，所以让Homebrew安装速度飞快。</Center>
+<Center>将以上命令粘贴至终端。脚本内置<a target="_blank" href="http://mirrors.ustc.edu.cn/help/brew.git.html">中科大镜像</a>，所以能让Homebrew安装速度飞快。</Center>
 
-<Center>如果对安装有疑问，请通过 <a href="/guide/start/">快速开始</a> 安装。</Center>
+<Center>如果想使用其他源安装，或者已安装但是想换源，请使用<a href="/guide/change-source/">镜像助手</a>获取脚本。</Center>
+
+<Center>更详细的安装说明，请点击 <a href="/guide/start/">快速开始</a> 开始安装。</Center>

@@ -49,7 +49,11 @@ export default defineConfig({
         children: ['/guide/index', '/guide/how-it-works', '/guide/start'],
       },
       {
-        title: 'M1芯片 ',
+        title: '工 具',
+        children: ['/guide/change-source'],
+      },
+      {
+        title: 'M1芯片',
         path: '/guide/m1/',
       },
       {
@@ -58,6 +62,16 @@ export default defineConfig({
       },
     ],
   },
+  extraBabelPlugins: [
+    [
+      'import',
+      {
+        libraryName: 'antd',
+        libraryDirectory: 'es',
+        style: 'css',
+      },
+    ],
+  ],
   analytics: {
     ga: 'UA-39288503-8',
     baidu: 'be934bce3f81621badc0bb5b581ab622',
