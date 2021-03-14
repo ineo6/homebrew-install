@@ -122,7 +122,9 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
           />
         )}
       </div>
-      <Notice />
+      {!showHero && !showFeatures && meta.filePath && !meta.gapless && (
+        <Notice />
+      )}
     </div>
   );
 };

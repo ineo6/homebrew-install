@@ -155,7 +155,7 @@ const SourceGenerate = ({ first }) => {
             size="small"
             value={platform}
             onChange={value => setPlatform((1 * (value as any)) as Platform)}
-            style={{ width: '120px' }}
+            style={{ width: '100px' }}
           >
             {platformList.map(config => (
               <Option value={config.key} key={config.key}>
@@ -170,7 +170,7 @@ const SourceGenerate = ({ first }) => {
             size="small"
             value={terminalType}
             onChange={value => setTerminalType(value)}
-            style={{ width: '120px' }}
+            style={{ width: '80px' }}
           >
             <Option value="zsh">zsh</Option>
             <Option value="bash">bash</Option>
