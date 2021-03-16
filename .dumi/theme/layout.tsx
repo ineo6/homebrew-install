@@ -102,18 +102,23 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
       <div className="__dumi-default-layout-content">
         {children}
         {!showHero && !showFeatures && meta.filePath && !meta.gapless && (
-          <div className="__dumi-default-layout-footer-meta">
-            {repoPlatform && (
-              <Link to={`${repoUrl}/edit/${branch}/${meta.filePath}`}>
-                {isCN
-                  ? `在 ${repoPlatform} 上编辑此页`
-                  : `Edit this doc on ${repoPlatform}`}
-              </Link>
-            )}
-            <span data-updated-text={isCN ? '最后更新时间：' : 'Last update: '}>
-              {updatedTime}
-            </span>
-          </div>
+          <>
+            <div className="__dumi-default-layout-footer-meta">
+              {repoPlatform && (
+                <Link to={`${repoUrl}/edit/${branch}/${meta.filePath}`}>
+                  {isCN
+                    ? `在 ${repoPlatform} 上编辑此页`
+                    : `Edit this doc on ${repoPlatform}`}
+                </Link>
+              )}
+              <span
+                data-updated-text={isCN ? '最后更新时间：' : 'Last update: '}
+              >
+                {updatedTime}
+              </span>
+            </div>
+            <div id="vcomments"></div>
+          </>
         )}
         {(showHero || showFeatures) && meta.footer && (
           <div
