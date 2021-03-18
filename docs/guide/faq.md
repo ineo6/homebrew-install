@@ -8,8 +8,8 @@ order: 4
 
 遇到解决不了的问题，先删除`homebrew`目录再重新运行脚本安装。
 
-- x86 上安装目录： /usr/local/Homebrew/
-- arm 上安装目录： /opt/homebrew
+- x86 上安装目录： `/usr/local/Homebrew/`
+- arm 上安装目录： `/opt/homebrew`
 
 ## M1 芯片 Mac 如何安装
 

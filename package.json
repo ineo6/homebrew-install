@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.5.0",
-    "antd": "^4.13.1"
+    "antd": "^4.13.1",
+    "valine": "^1.4.14"
   }
 }
