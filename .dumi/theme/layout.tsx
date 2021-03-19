@@ -5,8 +5,8 @@ import Navbar from 'dumi-theme-default/src/components/Navbar';
 import SideMenu from 'dumi-theme-default/src/components/SideMenu';
 import SlugList from 'dumi-theme-default/src/components/SlugList';
 import SearchBar from 'dumi-theme-default/src/components/SearchBar';
-import { ValineComment } from 'dumi';
 import Notice from './Notice';
+import ValineComment from './ValineComment';
 import './style/layout.less';
 
 const Hero = hero => (

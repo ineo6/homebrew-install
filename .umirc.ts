@@ -87,11 +87,6 @@ export default defineConfig({
     // mode: 'string',
     // staticMarkup: false,
   },
-  valine: {
-    appId: 'Ke6Uq74Gi6sdTxcDu4nJ6sdw-MdYXbMMI',
-    appKey: 'VtFD26towQ1JQxB9tLHd8odg',
-  },
-  plugins: ['./.dumi/theme/plugin-valine/index.ts'],
   exportStatic: {},
   // more config: https://d.umijs.org/config
 });
