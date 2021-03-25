@@ -727,6 +727,7 @@ ohai "Downloading and installing Homebrew..."
 ) || exit 1
 
 if [[ ":${PATH}:" != *":${HOMEBREW_PREFIX}/bin:"* ]]; then
+  warn "看到此提示，一定要执行 Next steps 中的 环境变量设置！！！"
   warn "${HOMEBREW_PREFIX}/bin is not in your PATH."
 fi
 
@@ -775,8 +776,9 @@ case "$SHELL" in
     ;;
 esac
 if [[ "$UNAME_MACHINE" == "arm64" ]] || [[ -n "${HOMEBREW_ON_LINUX-}" ]]; then
+  echo "切记执行环境变量设置！，如已执行过请忽略。"
   cat <<EOS
-- Add Homebrew to your ${tty_bold}PATH${tty_reset} in ${tty_underline}${shell_profile}${tty_reset}:
+- 添加 Homebrew 到 ${tty_underline}${shell_profile}${tty_reset} 文件的 ${tty_bold}PATH${tty_reset} 中:
     echo 'eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"' >> ${shell_profile}
     eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
 EOS
@@ -791,8 +793,8 @@ if [[ -n "${non_default_repos}" ]]; then
   printf "    %s\n" "${additional_shellenv_commands[@]}"
 fi
 
-echo "- Run \`brew help\` to get started"
-echo "- Further documentation: "
+echo "- 运行 \`brew help\` 开始体验吧"
+echo "- 更多文档: "
 echo "    ${tty_underline}https://docs.brew.sh${tty_reset}"
 
 if [[ -n "${HOMEBREW_ON_LINUX-}" ]]; then
