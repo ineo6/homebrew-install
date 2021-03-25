@@ -81,8 +81,8 @@ brew update
 
 执行命令`echo $SHELL`，根据结果判断：
 
-- `/bin/bash` => `bash` => `.bash_profile`
 - `/bin/zsh` => `zsh` => `.zprofile`
+- `/bin/bash` => `bash` => `.bash_profile`
 
 然后继续正式操作，以**中科大源**为例：
 
