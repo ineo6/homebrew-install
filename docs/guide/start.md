@@ -155,7 +155,11 @@ source ~/.zprofile
 
 ## 如果对您有帮助
 
-分享、收藏，能让更多人能发现文章，这也是对我的认可和鼓励，谢谢。
+您可以考虑请我喝杯咖啡。
+
+当然分享、收藏，能让更多人能发现文章，这也是对我的认可和鼓励。
+
+![wechat-reward-code-zh.jpg](https://i.loli.net/2021/03/14/GZm6bFKVEjHozke.jpg)
 
 ## 参考文章
 
