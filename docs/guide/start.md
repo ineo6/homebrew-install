@@ -81,8 +81,8 @@ brew update
 
 执行命令`echo $SHELL`，根据结果判断：
 
-- `/bin/bash` => `bash` => `.bash_profile`
 - `/bin/zsh` => `zsh` => `.zprofile`
+- `/bin/bash` => `bash` => `.bash_profile`
 
 然后继续正式操作，以**中科大源**为例：
 
@@ -155,7 +155,11 @@ source ~/.zprofile
 
 ## 如果对您有帮助
 
-分享、收藏，能让更多人能发现文章，这也是对我的认可和鼓励，谢谢。
+您可以考虑请我喝杯咖啡。
+
+当然分享、收藏，能让更多人能发现文章，这也是对我的认可和鼓励。
+
+![wechat-reward-code-zh.jpg](https://i.loli.net/2021/03/14/GZm6bFKVEjHozke.jpg)
 
 ## 参考文章
 

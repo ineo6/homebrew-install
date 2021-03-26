@@ -58,36 +58,36 @@ Use '--' to separate paths from revisions, like this:
 
 一般是环境变量无效，请使用`echo $SHELL`确认终端类型，参考上节。
 
-如果是`m1`芯片`Mac`则可能是没有把`/opt/homebrew/bin`加入环境变量：
+`m1`芯片`Mac`电脑需要手动设置环境变量：
 
 zsh
 
 ```shell
-echo export PATH=/opt/homebrew/bin:$PATH >> ~/.zprofile
-source ~/.zprofile
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
 bash
 
 ```shell
-echo export PATH=/opt/homebrew/bin:$PATH >> ~/.bash_profile
-source ~/.bash_profile
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.bash_profile
+eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
-否则可能因为特殊情况需要把`/usr/local/bin`手动加入环境变量：
+非`m1`的话，可以尝试手动加入环境变量：
 
 zsh
 
 ```shell
-echo export PATH=/usr/local/bin:$PATH >> ~/.zprofile
-source ~/.zprofile
+echo 'eval "$(/usr/local/Homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/usr/local/Homebrew/bin/brew shellenv)"
 ```
 
 bash
 
 ```shell
-echo export PATH=/usr/local/bin:$PATH >> ~/.bash_profile
-source ~/.bash_profile
+echo 'eval "$(/usr/local/Homebrew/bin/brew shellenv)"' >> ~/.bash_profile
+eval "$(/usr/local/Homebrew/bin/brew shellenv)"
 ```
 
 ## SHA256 mismatch

@@ -41,6 +41,7 @@ export default defineConfig({
   navs: [
     null,
     { title: 'GitHub', path: 'https://github.com/ineo6/homebrew-install' },
+    { title: 'GitMaster', path: 'https://github.com/ineo6/git-master' },
   ],
   menus: {
     '/guide': [
