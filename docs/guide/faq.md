@@ -79,15 +79,15 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 zsh
 
 ```shell
-echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.zprofile
-eval "$(/opt/homebrew/bin/brew shellenv)"
+echo 'eval "$(/usr/local/Homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/usr/local/Homebrew/bin/brew shellenv)"
 ```
 
 bash
 
 ```shell
-echo 'eval "$(/usr/local/bin/brew shellenv)"' >> ~/.bash_profile
-eval "$(/opt/homebrew/bin/brew shellenv)"
+echo 'eval "$(/usr/local/Homebrew/bin/brew shellenv)"' >> ~/.bash_profile
+eval "$(/usr/local/Homebrew/bin/brew shellenv)"
 ```
 
 ## SHA256 mismatch
