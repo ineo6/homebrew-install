@@ -8,8 +8,26 @@ order: 4
 
 遇到解决不了的问题，先删除`homebrew`目录再重新运行脚本安装。
 
+删除可以通过脚本或者在文件夹中删除(mac)：
+
+```shell
+// 默认
+rm -rf 目录
+
+// 执行root权限
+sudo rm -rf 目录
+```
+
+使用`rm -rf`命令是比较危险的行为，请一定要具体指定的、合适的目录。
+
+### macOS
+
 - x86 上安装目录： `/usr/local/Homebrew/`
 - arm 上安装目录： `/opt/homebrew`
+
+### Linux
+
+安装目录在`/home/linuxbrew`。
 
 ## M1 芯片 Mac 如何安装
 
@@ -142,3 +160,9 @@ xcode-select --install
 举例子我的电脑是`Big Sur 11.2`，在版本记录里看到`12.4`就是`Xcode`对应的版本号，然后我们找到"Command Line Tools for Xcode 12.4"下载。
 
 [hosts]: https://mp.weixin.qq.com/s/gFNP2Pk81vg7nE1XsDingg
+
+## raw.githubusercontent.com 无法访问
+
+这是典型的`GitHub`不稳定的表现，你可以通过设置`hosts`缓解该问题。
+
+参考 [GitHub 加速教程](/guide/github/) 。

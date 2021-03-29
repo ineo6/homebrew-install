@@ -50,6 +50,10 @@ export default defineConfig({
         children: ['/guide/index', '/guide/how-it-works', '/guide/start'],
       },
       {
+        title: '相 关',
+        children: ['/guide/github'],
+      },
+      {
         title: '工 具',
         children: ['/guide/change-source'],
       },
