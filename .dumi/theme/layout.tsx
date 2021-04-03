@@ -6,7 +6,6 @@ import SideMenu from 'dumi-theme-default/src/components/SideMenu';
 import SlugList from 'dumi-theme-default/src/components/SlugList';
 import SearchBar from 'dumi-theme-default/src/components/SearchBar';
 import Notice from './Notice';
-import ValineComment from './ValineComment';
 import './style/layout.less';
 
 const Hero = hero => (
@@ -118,7 +117,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
                 {updatedTime}
               </span>
             </div>
-            <ValineComment location={location} />
+            {/*<ValineComment location={location} />*/}
           </>
         )}
         {(showHero || showFeatures) && meta.footer && (

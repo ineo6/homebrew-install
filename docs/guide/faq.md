@@ -11,10 +11,7 @@ order: 4
 删除可以通过脚本或者在文件夹中删除(mac)：
 
 ```shell
-// 默认
-rm -rf 目录
-
-// 执行root权限
+// 目录替换为真实的brew位置
 sudo rm -rf 目录
 ```
 
@@ -22,8 +19,10 @@ sudo rm -rf 目录
 
 ### macOS
 
-- x86 上安装目录： `/usr/local/Homebrew/`
-- arm 上安装目录： `/opt/homebrew`
+- Intel 上安装目录： `/usr/local/Homebrew/`
+- ARM 上安装目录： `/opt/homebrew`
+
+另外在终端可以执行`open /usr/local/Homebrew/`打开文件夹界面删除。
 
 ### Linux
 
@@ -70,11 +69,11 @@ Use '--' to separate paths from revisions, like this:
 - bash: `/bin/bash`
 - zsh: `/bin/zsh`
 
-然后根据终端类型设置镜像，参考"设置镜像"。
+然后根据终端类型设置镜像，参考 [设置镜像](/guide/start/#part3) 。
 
 ## command not found: brew
 
-一般是环境变量无效，请使用`echo $SHELL`确认终端类型，参考上节。
+一般是环境变量无效，请使用`echo $SHELL`确认终端类型，参考前一段落。
 
 `m1`芯片`Mac`电脑需要手动设置环境变量：
 
