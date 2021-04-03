@@ -197,7 +197,7 @@ ring_bell() {
 wait_for_user() {
   local c
   echo
-  echo "Press RETURN to continue or any other key to abort"
+  echo "请按回车键（RETURN）继续安装，按其他任意按键取消安装"
   getc c
   # we test for \r and \n because some stuff does \r instead
   if ! [[ "$c" == $'\r' || "$c" == $'\n' ]]; then
@@ -796,7 +796,7 @@ if [[ -n "${non_default_repos}" ]]; then
   printf "    %s\n" "${additional_shellenv_commands[@]}"
 fi
 
-echo "- 运行 \`brew help\` 开始体验吧"
+echo "- 🎉 恭喜，安装成功！运行 \`brew help\` 开始体验吧"
 echo "- 更多文档: "
 echo "    ${tty_underline}https://docs.brew.sh${tty_reset}"
 echo "    ${tty_underline}https://brew.idayer.com${tty_reset}"

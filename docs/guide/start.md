@@ -8,6 +8,8 @@ order: 3
 
 ## 安装说明
 
+如果之前尝试过其他脚本安装，请移除`Homebrew`后再安装，具体请参考 [FAQ](/guide/faq/#no1-的小秘籍) 。
+
 ```shell
 /bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install.sh)"
 ```
