@@ -125,7 +125,7 @@ brew update
 使用官方脚本同样会遇到`uninstall`地址无法访问问题，可以使用下面脚本：
 
 ```shell
-/bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/uninstall.shell)"
+/bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/uninstall.sh)"
 ```
 
 ## 其他相关
