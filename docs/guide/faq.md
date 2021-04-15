@@ -45,19 +45,29 @@ sudo rm -rf 目录
 
 ## brew install xxx 404 的问题
 
-在 `~/.zprofile` 或 `~/.bash_profile` 文件移除以下内容：至于选择哪个文件来操作，请按照 [判断终端](/guide/faq/#判断终端) 。
+原因是`bottles`镜像地址更新了，需要在 `~/.zprofile` 或 `~/.bash_profile` 文件更新镜像地址。
+
+至于选择哪个文件来操作，请按照 [判断终端](/guide/faq/#判断终端) 。
+
+1. 找到`HOMEBREW_BOTTLE_DOMAIN`配置，一般是这样的形式：
 
 ```shell
 export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
 ```
 
-以 `~/.zprofile` 为例，删除内容后执行：
+2. 然后使用 [镜像助手](/guide/change-source/) 获取替换的地址，复制 `HOMEBREW_BOTTLE_DOMAIN` 后面链接地址。
+
+比如中科大镜像就是这个了：
+
+```shell
+export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles/bottles/
+```
+
+3. 更新环境变量，以 `~/.zprofile` 为例，更新内容后执行：
 
 ```shell
 source ~/.zprofile
 ```
-
-然后**重启终端**，确保`echo $HOMEBREW_BOTTLE_DOMAIN`输出空内容。
 
 ## 判断终端
 
