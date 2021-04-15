@@ -73,6 +73,22 @@ const SourceGenerate = ({ first }) => {
 
     shellArray.push('brew update');
 
+    shellArray.push('');
+
+    const file = terminalType === 'zsh' ? '.zprofile' : '.bash_profile';
+
+    if (platform === Platform.Linux && matchMirror.linuxBottles) {
+      shellArray.push(
+        `echo 'export HOMEBREW_BOTTLE_DOMAIN=${matchMirror.linuxBottles}' >> ~/${file}`,
+      );
+    } else {
+      shellArray.push(
+        `echo 'export HOMEBREW_BOTTLE_DOMAIN=${matchMirror.bottles}' >> ~/${file}`,
+      );
+    }
+
+    shellArray.push(`source ~/${file}`);
+
     return shellArray.join('\n');
   }
 
@@ -94,6 +110,23 @@ const SourceGenerate = ({ first }) => {
     shellArray.push(
       '/bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install.sh)"',
     );
+
+    shellArray.push('');
+    shellArray.push('# 2.安装完成后设置');
+
+    const file = terminalType === 'zsh' ? '.zprofile' : '.bash_profile';
+
+    if (platform === Platform.Linux && matchMirror.linuxBottles) {
+      shellArray.push(
+        `echo 'export HOMEBREW_BOTTLE_DOMAIN=${matchMirror.linuxBottles}' >> ~/${file}`,
+      );
+    } else {
+      shellArray.push(
+        `echo 'export HOMEBREW_BOTTLE_DOMAIN=${matchMirror.bottles}' >> ~/${file}`,
+      );
+    }
+
+    shellArray.push(`source ~/${file}`);
 
     return shellArray.join('\n');
   }

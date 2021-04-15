@@ -3,7 +3,7 @@ export const tencentMirror = {
   core: 'https://mirrors.cloud.tencent.com/homebrew/homebrew-core.git',
   linuxCore: 'https://mirrors.cloud.tencent.com/homebrew/linuxbrew-core.git',
   cask: 'https://mirrors.cloud.tencent.com/homebrew/homebrew-cask.git',
-  bottles: 'https://mirrors.cloud.tencent.com/homebrew-bottles/bottles',
+  bottles: 'https://mirrors.cloud.tencent.com/homebrew-bottles/bottles/',
   linuxBottles: '',
 };
 
@@ -13,8 +13,9 @@ export const tsinghuaMirror = {
   linuxCore:
     'https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/linuxbrew-core.git',
   cask: 'https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-cask.git',
-  bottles: 'https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles',
-  linuxBottles: 'https://mirrors.tuna.tsinghua.edu.cn/linuxbrew-bottles',
+  bottles: 'https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/bottles/',
+  linuxBottles:
+    'https://mirrors.tuna.tsinghua.edu.cn/linuxbrew-bottles/bottles/',
 };
 
 export const ustcMirror = {
@@ -22,8 +23,8 @@ export const ustcMirror = {
   core: 'https://mirrors.ustc.edu.cn/homebrew-core.git',
   linuxCore: 'https://mirrors.ustc.edu.cn/linuxbrew-core.git',
   cask: 'https://mirrors.ustc.edu.cn/homebrew-cask.git',
-  bottles: 'https://mirrors.ustc.edu.cn/homebrew-bottles',
-  linuxBottles: 'https://mirrors.ustc.edu.cn/linuxbrew-bottles',
+  bottles: 'https://mirrors.ustc.edu.cn/homebrew-bottles/bottles/',
+  linuxBottles: 'https://mirrors.ustc.edu.cn/linuxbrew-bottles/bottles/',
 };
 
 export const bfsuMirror = {
@@ -31,8 +32,8 @@ export const bfsuMirror = {
   core: 'https://mirrors.bfsu.edu.cn/git/homebrew/homebrew-core.git',
   linuxCore: 'https://mirrors.bfsu.edu.cn/git/homebrew/linuxbrew-core.git',
   cask: 'https://mirrors.bfsu.edu.cn/git/homebrew/homebrew-cask.git',
-  bottles: 'https://mirrors.bfsu.edu.cn/homebrew-bottles',
-  linuxBottles: 'https://mirrors.bfsu.edu.cn/linuxbrew-bottles',
+  bottles: 'https://mirrors.bfsu.edu.cn/homebrew-bottles/bottles/',
+  linuxBottles: 'https://mirrors.bfsu.edu.cn/linuxbrew-bottles/bottles/',
 };
 
 export const mirrorData: { [key: string]: any } = {

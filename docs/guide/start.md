@@ -77,6 +77,33 @@ git -C "$(brew --repo homebrew/cask)" remote set-url origin https://mirrors.tuna
 brew update
 ```
 
+### 设置 bottles 镜像
+
+设置环境变量需要注意终端的类型，可以先通过以下方式获取：
+
+执行命令`echo $SHELL`，根据结果判断：
+
+- `/bin/zsh` => `zsh` => `.zprofile`
+- `/bin/bash` => `bash` => `.bash_profile`
+
+然后继续正式操作，以**中科大源**为例：
+
+从`macOS Catalina`(10.15.x) 版开始，`Mac`使用`zsh`作为默认`Shell`，对应文件是`.zprofile`，所以命令为：
+
+```shell
+echo 'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles/bottles' >> ~/.zprofile
+source ~/.zprofile
+```
+
+如果是`macOS Mojave` 及更低版本，并且没有自己配置过`zsh`，对应文件则是`.bash_profile`：
+
+```shell
+echo 'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles/bottles' >> ~/.bash_profile
+source ~/.bash_profile
+```
+
+> 注意：上述区别仅仅是`.zprofile`和`.bash_profile`不同，上下文如有再次提及编辑`.zprofile`，均按此方法判断具体操作的文件。
+
 至此，安装和设置操作都完成了。
 
 ### 恢复默认源
@@ -90,6 +117,8 @@ git -C "$(brew --repo homebrew/cask)" remote set-url origin https://github.com/H
 
 brew update
 ```
+
+`homebrew-bottles`配置只能手动删除，将 `~/.zprofile` 文件中的 `HOMEBREW_BOTTLE_DOMAIN=https://mirrors.xxx.com`内容删除，并执行 `source ~/.zprofile`。
 
 ## 如何卸载 Homebrew
 
