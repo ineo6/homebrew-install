@@ -43,6 +43,33 @@ sudo rm -rf 目录
 - [Mac 终端走 ssr 代理](http://onwaier.com/?p=229)
 - [如何让 macOS 的「终端」走代理？](https://www.xiaodefa.com/digital/121.html)
 
+## brew install xxx 404 的问题
+
+在 `~/.zprofile` 或 `~/.bash_profile` 文件移除以下内容：至于选择哪个文件来操作，请按照 [判断终端](/guide/faq/#判断终端) 。
+
+```shell
+export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
+```
+
+以 `~/.zprofile` 为例，删除内容后执行：
+
+```shell
+source ~/.zprofile
+```
+
+然后**重启终端**，确保`echo $HOMEBREW_BOTTLE_DOMAIN`输出空内容。
+
+## 判断终端
+
+可以先通过以下方式获取：
+
+执行命令`echo $SHELL`，根据结果判断：
+
+- `/bin/zsh` => `zsh` => `.zprofile`
+- `/bin/bash` => `bash` => `.bash_profile`
+
+> 注意：文章内如有再次提及编辑`.zprofile`，均按此方法判断具体操作的文件。
+
 ## fatal: unable to access xxx
 
 ```
@@ -69,7 +96,7 @@ Use '--' to separate paths from revisions, like this:
 - bash: `/bin/bash`
 - zsh: `/bin/zsh`
 
-然后根据终端类型设置镜像，参考 [设置镜像](/guide/start/#part3) 。
+然后根据终端类型设置镜像，参考 [判断终端](/guide/faq/#判断终端) 。
 
 ## command not found: brew
 
