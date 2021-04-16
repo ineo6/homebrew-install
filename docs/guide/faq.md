@@ -60,7 +60,7 @@ export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
 比如中科大镜像就是这个了：
 
 ```shell
-export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles/bottles/
+export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles/bottles
 ```
 
 3. 更新环境变量，以 `~/.zprofile` 为例，更新内容后执行：
