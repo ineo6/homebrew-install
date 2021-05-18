@@ -157,6 +157,7 @@ body {
       a dt {
         color: @c-link;
         transition: opacity 0.2s;
+
         &:hover {
           opacity: 0.7;
           text-decoration: underline;
@@ -319,4 +320,31 @@ body {
 
 #vcomments {
   margin-top: 20px;
+}
+
+.waimai-banner {
+  display: inline-block;
+  vertical-align: middle;
+
+  .waimai-banner-img {
+    height: 64px;
+    cursor: pointer;
+  }
+
+  .waimai-banner-tiny-img {
+    cursor: pointer;
+    height: 50px;
+    display: none;
+    margin-left: 20px;
+  }
+
+  @media @mobile {
+    .waimai-banner-img {
+      display: none;
+    }
+
+    .waimai-banner-tiny-img {
+      display: block;
+    }
+  }
 }

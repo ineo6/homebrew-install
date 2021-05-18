@@ -5,6 +5,7 @@ import Navbar from 'dumi-theme-default/src/components/Navbar';
 import SideMenu from 'dumi-theme-default/src/components/SideMenu';
 import SlugList from 'dumi-theme-default/src/components/SlugList';
 import SearchBar from 'dumi-theme-default/src/components/SearchBar';
+import { Popover } from 'antd';
 import Notice from './Notice';
 import './style/layout.less';
 
@@ -22,6 +23,30 @@ const Hero = hero => (
         ))}
     </div>
   </>
+);
+
+const WaimaiBanner = () => (
+  <div className="waimai-banner">
+    <Popover
+      placement="bottom"
+      content={
+        <>
+          <p style={{ textAlign: 'center' }}>天天有点券</p>
+          <img
+            src="/images/mini-waimai.jpg"
+            style={{ height: '129px', width: '129px' }}
+          />
+        </>
+      }
+      trigger="hover"
+    >
+      <img className="waimai-banner-img" src="/images/waimai-banner.png" />
+      <img
+        className="waimai-banner-tiny-img"
+        src="/images/waimai-banner-sm.png"
+      />
+    </Popover>
+  </div>
 );
 
 const Features = features => (
@@ -87,7 +112,12 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     >
       <Navbar
         location={location}
-        navPrefix={<SearchBar />}
+        navPrefix={
+          <div style={{ display: 'inline-block' }}>
+            <WaimaiBanner />
+            <SearchBar />
+          </div>
+        }
         onMobileMenuClick={ev => {
           setMenuCollapsed(val => !val);
           ev.stopPropagation();
