@@ -83,7 +83,7 @@ jobs:
 
       - run: /bin/bash uninstall.sh -f >/dev/null
 
-      - name: Install Homebrew with GitHub remotes
+      - name: Install Homebrew with mirror remotes
         # Use the default remotes but with Git Protocol
         run: |
           HOMEBREW_BREW_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/brew"
