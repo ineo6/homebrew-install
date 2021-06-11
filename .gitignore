@@ -21,3 +21,5 @@
 # ide
 /.vscode
 /.idea
+
+/lib/*
