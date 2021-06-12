@@ -20,13 +20,36 @@ sudo rm -rf 目录
 ### macOS
 
 - Intel 上安装目录： `/usr/local/Homebrew/`
-- ARM 上安装目录： `/opt/homebrew`
+- m1 arm 上安装目录： `/opt/homebrew`
 
 另外在终端可以执行`open /usr/local/Homebrew/`打开文件夹界面删除。
 
 ### Linux
 
 安装目录在`/home/linuxbrew`。
+
+## 安装时 formulae 找不到
+
+如果遇到下面的提示。
+
+```shell
+==> Searching for similarly named formulae...
+Error: No similarly named formulae found.
+Error: No available formula or cask with the name "nasm".
+==> Searching for a previously deleted formula (in the last month)...
+Error: No previously deleted formula found.
+==> Searching taps on GitHub...
+Error: No formulae found in taps.
+```
+
+尝试执行以下命令：
+
+```shell
+rm -rf $(brew --repo homebrew/core)
+brew tap homebrew/core
+```
+
+如果还不行，请删除`homebrew`目录，再重新安装。
 
 ## M1 芯片 Mac 如何安装
 
