@@ -22,7 +22,7 @@ sudo rm -rf 目录
 - Intel 上安装目录： `/usr/local/Homebrew/`
 - m1 arm 上安装目录： `/opt/homebrew`
 
-另外在终端可以执行`open /usr/local/Homebrew/`打开文件夹界面删除。
+另外在终端可以执行`open /usr/local/Homebrew/` 或 `open /opt/homebrew`，打开文件夹通过界面删除。
 
 ### Linux
 
