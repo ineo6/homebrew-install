@@ -45,6 +45,7 @@ if [[ -z "${HOMEBREW_ON_LINUX-}" ]]; then
   HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
 
   STAT="stat -f"
+  PERMISSION_FORMAT="%A"
   CHOWN="/usr/sbin/chown"
   CHGRP="/usr/bin/chgrp"
   GROUP="admin"
@@ -61,6 +62,7 @@ else
   HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/linuxbrew-core.git"
 
   STAT="stat --printf"
+  PERMISSION_FORMAT="%a"
   CHOWN="/bin/chown"
   CHGRP="/bin/chgrp"
   GROUP="$(id -gn)"
@@ -90,6 +92,8 @@ MACOS_OLDEST_SUPPORTED="10.14"
 # For Homebrew on Linux
 REQUIRED_RUBY_VERSION=2.6  # https://github.com/Homebrew/brew/pull/6556
 REQUIRED_GLIBC_VERSION=2.13  # https://docs.brew.sh/Homebrew-on-Linux#requirements
+REQUIRED_CURL_VERSION=7.41.0 # HOMEBREW_MINIMUM_CURL_VERSION in brew.sh in Homebrew/brew
+REQUIRED_GIT_VERSION=2.7.0 # HOMEBREW_MINIMUM_GIT_VERSION in brew.sh in Homebrew/brew
 
 # no analytics during installation
 export HOMEBREW_NO_ANALYTICS_THIS_RUN=1
@@ -109,6 +113,10 @@ tty_bold="$(tty_mkbold 39)"
 tty_reset="$(tty_escape 0)"
 
 have_sudo_access() {
+  if [[ ! -x "/usr/bin/sudo" ]]; then
+    return 1
+  fi
+
   local -a args
   if [[ -n "${SUDO_ASKPASS-}" ]]; then
     args=("-A")
@@ -233,11 +241,11 @@ should_install_command_line_tools() {
 }
 
 get_permission() {
-  $STAT "%A" "$1"
+  $STAT "${PERMISSION_FORMAT}" "$1"
 }
 
 user_only_chmod() {
-  [[ -d "$1" ]] && [[ "$(get_permission "$1")" != "755" ]]
+  [[ -d "$1" ]] && [[ "$(get_permission "$1")" != 75[0145] ]]
 }
 
 exists_but_not_writable() {
@@ -257,7 +265,7 @@ get_group() {
 }
 
 file_not_grpowned() {
-  [[ " $(id -G "$USER") " != *" $(get_group "$1") "*  ]]
+  [[ " $(id -G "$USER") " != *" $(get_group "$1") "* ]]
 }
 
 # Please sync with 'test_ruby()' in 'Library/Homebrew/utils/ruby.sh' from Homebrew/brew repository.
@@ -272,17 +280,46 @@ test_ruby() {
               Gem::Version.new('$REQUIRED_RUBY_VERSION').to_s.split('.').first(2)" 2>/dev/null
 }
 
-no_usable_ruby() {
-  local ruby_exec
+test_curl() {
+  if [[ ! -x $1 ]]; then
+    return 1
+  fi
+
+  local curl_version_output curl_name_and_version
+  curl_version_output=$("$1" --version 2>/dev/null)
+  curl_name_and_version="${curl_version_output%% (*}"
+  version_ge "$(major_minor "${curl_name_and_version##* }")" "$(major_minor "$REQUIRED_CURL_VERSION")"
+}
+
+test_git() {
+  if [[ ! -x $1 ]]; then
+    return 1
+  fi
+
+  local git_version_output
+  git_version_output=$("$1" --version 2>/dev/null)
+  version_ge "$(major_minor "${git_version_output##* }")" "$(major_minor "$REQUIRED_GIT_VERSION")"
+}
+
+# Search PATH for the specified program that satisfies Homebrew requirements
+find_tool() {
+  if [[ $# -ne 1 ]]; then
+    return
+  fi
+
+  local executable
   IFS=$'\n' # Do word splitting on new lines only
-  for ruby_exec in $(which -a ruby 2>/dev/null); do
-    if test_ruby "$ruby_exec"; then
-      IFS=$' \t\n' # Restore IFS to its default value
-      return 1
+  for executable in $(which -a "$1" 2>/dev/null); do
+    if "test_$1" "$executable"; then
+      echo "$executable"
+      break
     fi
   done
   IFS=$' \t\n' # Restore IFS to its default value
-  return 0
+}
+
+no_usable_ruby() {
+  [[ -z $(find_tool ruby) ]]
 }
 
 outdated_glibc() {
@@ -310,7 +347,7 @@ if [[ -z "${USER-}" ]]; then
 fi
 
 # Invalidate sudo timestamp before exiting (if it wasn't active before).
-if ! /usr/bin/sudo -n -v 2>/dev/null; then
+if [[ -x /usr/bin/sudo ]] && ! /usr/bin/sudo -n -v 2>/dev/null; then
   trap '/usr/bin/sudo -k' EXIT
 fi
 
@@ -325,6 +362,18 @@ You must install Git before installing Homebrew. See:
   ${tty_underline}https://docs.brew.sh/Installation${tty_reset}
 EOABORT
 )"
+elif [[ -n "${HOMEBREW_ON_LINUX-}" ]]; then
+  USABLE_GIT=$(find_tool git)
+  if [[ -z "$USABLE_GIT" ]]; then
+    abort "$(cat <<-EOABORT
+	Git that is available on your system does not satisfy Homebrew requirements.
+	Please install Git $REQUIRED_GIT_VERSION or newer and add it to your PATH.
+	EOABORT
+    )"
+  elif [[ "$USABLE_GIT" != /usr/bin/git ]]; then
+    export HOMEBREW_GIT_PATH=$USABLE_GIT
+    ohai "Found Git: $HOMEBREW_GIT_PATH"
+  fi
 fi
 
 if ! command -v curl >/dev/null; then
@@ -333,6 +382,25 @@ You must install cURL before installing Homebrew. See:
   ${tty_underline}https://docs.brew.sh/Installation${tty_reset}
 EOABORT
 )"
+elif [[ -n "${HOMEBREW_ON_LINUX-}" ]]; then
+  USABLE_CURL=$(find_tool curl)
+  if [[ -z "$USABLE_CURL" ]]; then
+    abort "$(cat <<-EOABORT
+	cURL that is available on your system does not satisfy Homebrew requirements.
+	Please install cURL $REQUIRED_CURL_VERSION or newer and add it to your PATH.
+	EOABORT
+    )"
+  elif [[ "$USABLE_CURL" != /usr/bin/curl ]]; then
+    export HOMEBREW_CURL_PATH=$USABLE_CURL
+    ohai "Found cURL: $HOMEBREW_CURL_PATH"
+  fi
+fi
+
+# Set HOMEBREW_DEVELOPER on Linux systems where usable Git/cURL is not in /usr/bin
+if [[ "${HOMEBREW_ON_LINUX-}" && ( -n "${HOMEBREW_CURL_PATH-}" || -n "${HOMEBREW_GIT_PATH-}" ) ]]
+then
+  ohai "Setting HOMEBREW_DEVELOPER to use Git/cURL not in /usr/bin"
+  export HOMEBREW_DEVELOPER=1
 fi
 
 # shellcheck disable=SC2016
@@ -481,9 +549,12 @@ for dir in "${directories[@]}"; do
 done
 
 user_chmods=()
+mkdirs_user_only=()
 if [[ "${#zsh_dirs[@]}" -gt 0 ]]; then
   for dir in "${zsh_dirs[@]}"; do
-    if user_only_chmod "${dir}"; then
+    if [[ ! -d "${dir}" ]]; then
+      mkdirs_user_only+=("${dir}")
+    elif user_only_chmod "${dir}"; then
       user_chmods+=("${dir}")
     fi
   done
@@ -598,7 +669,7 @@ if [[ -d "${HOMEBREW_PREFIX}" ]]; then
     execute_sudo "/bin/chmod" "g+rwx" "${group_chmods[@]}"
   fi
   if [[ "${#user_chmods[@]}" -gt 0 ]]; then
-    execute_sudo "/bin/chmod" "755" "${user_chmods[@]}"
+    execute_sudo "/bin/chmod" "g-w,o-w" "${user_chmods[@]}"
   fi
   if [[ "${#chowns[@]}" -gt 0 ]]; then
     execute_sudo "$CHOWN" "$USER" "${chowns[@]}"
@@ -617,7 +688,10 @@ fi
 
 if [[ "${#mkdirs[@]}" -gt 0 ]]; then
   execute_sudo "/bin/mkdir" "-p" "${mkdirs[@]}"
-  execute_sudo "/bin/chmod" "g+rwx" "${mkdirs[@]}"
+  execute_sudo "/bin/chmod" "u=rwx,g=rwx" "${mkdirs[@]}"
+  if [[ "${#mkdirs_user_only[@]}" -gt 0 ]]; then
+    execute_sudo "/bin/chmod" "g-w,o-w" "${mkdirs_user_only[@]}"
+  fi
   execute_sudo "$CHOWN" "$USER" "${mkdirs[@]}"
   execute_sudo "$CHGRP" "$GROUP" "${mkdirs[@]}"
 fi
@@ -708,7 +782,11 @@ ohai "Downloading and installing Homebrew..."
   execute "git" "reset" "--hard" "origin/master"
 
   if [[ "${HOMEBREW_REPOSITORY}" != "${HOMEBREW_PREFIX}" ]]; then
-    execute "ln" "-sf" "${HOMEBREW_REPOSITORY}/bin/brew" "${HOMEBREW_PREFIX}/bin/brew"
+    if [[ "${HOMEBREW_REPOSITORY}" == "${HOMEBREW_PREFIX}/Homebrew" ]]; then
+      execute "ln" "-sf" "../Homebrew/bin/brew" "${HOMEBREW_PREFIX}/bin/brew"
+    else
+      abort "The Homebrew/brew repository should be placed in the Homebrew prefix directory."
+    fi
   fi
 
   if [[ ! -d "${HOMEBREW_CORE}" ]]; then
@@ -797,7 +875,7 @@ if [[ -n "${non_default_repos}" ]]; then
   if [[ "${#additional_shellenv_commands[@]}" -gt 1 ]]; then
     s="s"
   fi
-  echo "- Add the non-default Git remote${s} for ${non_default_repos} in ${tty_underline}${shell_profile}${tty_reset}:"
+  echo "- Run these commands in your terminal to add the non-default Git remote${s} for ${non_default_repos}:"
   printf "    echo '%s' >> ${shell_profile}\n" "${additional_shellenv_commands[@]}"
   printf "    %s\n" "${additional_shellenv_commands[@]}"
 fi
