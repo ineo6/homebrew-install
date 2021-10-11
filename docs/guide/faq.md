@@ -51,6 +51,20 @@ brew tap homebrew/core
 
 如果还不行，请删除`homebrew`目录，再重新安装。
 
+## certificate has expired
+
+近期很多人反馈安装`brew`遇到下面的错误：
+
+```
+fatal: unable to access 'https://mirrors.ustc.edu.cn/brew.git/': SSL certificate problem: certificate has expired
+```
+
+目前临时的解决方案如下：
+
+```shell、
+git config --global http.sslVerify false
+```
+
 ## M1 芯片 Mac 如何安装
 
 `Homebrew`已支持在`arm`上安装，但是一些软件兼容性还有待更新，官方查阅地址可看 [说明](https://github.com/Homebrew/brew/issues/7857) 。
