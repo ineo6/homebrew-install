@@ -46,9 +46,6 @@ then
     HOMEBREW_REPOSITORY="${HOMEBREW_PREFIX}/Homebrew"
   fi
   HOMEBREW_CACHE="${HOME}/Library/Caches/Homebrew"
-  #changed
-  #HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/homebrew-core"
-  HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
 
   STAT_FLAG="-f"
   PERMISSION_FORMAT="%A"
@@ -75,8 +72,8 @@ fi
 #HOMEBREW_BREW_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/brew"
 HOMEBREW_BREW_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
 #changed
-#HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/linuxbrew-core"
-HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/linuxbrew-core.git"
+#HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/homebrew-core"
+HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
 
 # Use remote URLs of Homebrew repositories from environment if set.
 HOMEBREW_BREW_GIT_REMOTE="${HOMEBREW_BREW_GIT_REMOTE:-"${HOMEBREW_BREW_DEFAULT_GIT_REMOTE}"}"
