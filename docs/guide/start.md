@@ -11,7 +11,7 @@ order: 3
 如果之前尝试过其他脚本安装，请移除`Homebrew`后再安装，具体请参考 [FAQ](/guide/faq/#no1-的小秘籍) 。
 
 ```shell
-/bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install.sh)"
+/bin/bash -c "$(curl -fsSL https://gitee.com/ineo6/homebrew-install/raw/master/install.sh)"
 ```
 
 > 默认使用中科大源，如果需要换源参考 [换源](/guide/change-source/)。
@@ -125,7 +125,7 @@ brew update
 使用官方脚本同样会遇到`uninstall`地址无法访问问题，可以使用下面脚本：
 
 ```shell
-/bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/uninstall.sh)"
+/bin/bash -c "$(curl -fsSL https://gitee.com/ineo6/homebrew-install/raw/master/uninstall.sh)"
 ```
 
 ## 其他相关

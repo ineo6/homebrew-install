@@ -14,7 +14,7 @@ footer: Open-source MIT Licensed | Copyright © 2021<br />Powered by [Neo](https
 ## 快速安装
 
 ```shell script
-/bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install.sh)"
+/bin/bash -c "$(curl -fsSL https://gitee.com/ineo6/homebrew-install/raw/master/install.sh)"
 ```
 
 <Center>将以上命令粘贴至终端。脚本内置 <a target="_blank" href="http://mirrors.ustc.edu.cn/help/brew.git.html">中科大镜像</a> ，所以能让Homebrew安装的更快。</Center>

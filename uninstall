@@ -3,8 +3,8 @@
 STDERR.print <<EOS
 Warning: Ruby版本Homebrew安装脚本已被废弃，新版脚本使用Bash重写。
 请使用以下命令:
-  /bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/uninstall.sh)"
+  /bin/bash -c "$(curl -fsSL https://gitee.com/ineo6/homebrew-install/raw/master/uninstall.sh)"
 
 EOS
 
-Kernel.exec "/bin/bash", "-c", '/bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/uninstall.sh)"' + ' uninstall ' +  ARGV.join(" ")
+Kernel.exec "/bin/bash", "-c", '/bin/bash -c "$(curl -fsSL https://gitee.com/ineo6/homebrew-install/raw/master/uninstall.sh)"' + ' uninstall ' +  ARGV.join(" ")

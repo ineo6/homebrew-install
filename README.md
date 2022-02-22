@@ -5,7 +5,7 @@
 ## 用法 & 指南
 
 ```shell
-/bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install.sh)"
+/bin/bash -c "$(curl -fsSL https://gitee.com/ineo6/homebrew-install/raw/master/install.sh)"
 ```
 
 强烈建议按照教程处理，详情请访问 [文档主页](https://brew.idayer.com/) 。

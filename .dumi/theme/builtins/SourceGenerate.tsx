@@ -108,7 +108,7 @@ const SourceGenerate = ({ first }) => {
     }
 
     shellArray.push(
-      '/bin/bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install.sh)"',
+      '/bin/bash -c "$(curl -fsSL https://gitee.com/ineo6/homebrew-install/raw/master/install.sh)"',
     );
 
     shellArray.push('');
