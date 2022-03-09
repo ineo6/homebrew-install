@@ -1,11 +1,25 @@
 #!/bin/bash
+
+# We don't need return codes for "$(command)", only stdout is needed.
+# Allow `[[ -n "$(command)" ]]`, `func "$(command)"`, pipes, etc.
+# shellcheck disable=SC2312
+
 set -u
-shopt -s extglob
 
 abort() {
   printf "%s\n" "$@"
   exit 1
 }
+
+# Fail fast with a concise message when not using bash
+# Single brackets are needed here for POSIX compatibility
+# shellcheck disable=SC2292
+if [ -z "${BASH_VERSION:-}" ]
+then
+  abort "Bash is required to interpret this script."
+fi
+
+shopt -s extglob
 
 strip_s() {
   local s
@@ -79,27 +93,29 @@ tty_red="$(tty_mkbold 31)"
 tty_bold="$(tty_mkbold 39)"
 tty_reset="$(tty_escape 0)"
 
+unset HAVE_SUDO_ACCESS # unset this from the environment
+
 have_sudo_access() {
-  local -a args
+  if [[ ! -x "/usr/bin/sudo" ]]
+  then
+    return 1
+  fi
+
+  local -a SUDO=("/usr/bin/sudo")
   if [[ -n "${SUDO_ASKPASS-}" ]]
   then
-    args=("-A")
+    SUDO+=("-A")
   fi
 
   if [[ -z "${HAVE_SUDO_ACCESS-}" ]]
   then
-    if [[ -n "${args[*]-}" ]]
-    then
-      /usr/bin/sudo "${args[@]}" -l mkdir &>/dev/null
-    else
-      /usr/bin/sudo -l mkdir &>/dev/null
-    fi
+    "${SUDO[@]}" -l mkdir &>/dev/null
     HAVE_SUDO_ACCESS="$?"
   fi
 
   if [[ -z "${HOMEBREW_ON_LINUX-}" ]] && [[ "${HAVE_SUDO_ACCESS}" -ne 0 ]]
   then
-    abort "Need sudo access on macOS (e.g. the user ${USER} to be an Administrator)!"
+    abort "Need sudo access on macOS (e.g. the user ${USER} needs to be an administrator)!"
   fi
 
   return "${HAVE_SUDO_ACCESS}"
@@ -155,12 +171,12 @@ execute() {
 
 execute_sudo() {
   local -a args=("$@")
-  if [[ -n "${SUDO_ASKPASS-}" ]]
-  then
-    args=("-A" "${args[@]}")
-  fi
   if have_sudo_access
   then
+    if [[ -n "${SUDO_ASKPASS-}" ]]
+    then
+      args=("-A" "${args[@]}")
+    fi
     ohai "/usr/bin/sudo" "${args[@]}"
     system "/usr/bin/sudo" "${args[@]}"
   else
@@ -381,11 +397,6 @@ do
     fi
   fi
 done
-
-sudo() {
-  ohai "/usr/bin/sudo" "$@"
-  system /usr/bin/sudo "$@"
-}
 
 [[ -n "${opt_quiet}" ]] || ohai "Removing empty directories..."
 paths=()
