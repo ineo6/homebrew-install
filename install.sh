@@ -7,7 +7,7 @@
 set -u
 
 abort() {
-  printf "%s\n" "$@"
+  printf "%s\n" "$@" >&2
   exit 1
 }
 
@@ -31,6 +31,12 @@ fi
 if [[ -n "${INTERACTIVE-}" && -n "${NONINTERACTIVE-}" ]]
 then
   abort 'Both `$INTERACTIVE` and `$NONINTERACTIVE` are set. Please unset at least one variable and try again.'
+fi
+
+# Check if script is run in POSIX mode
+if [[ -n "${POSIXLY_CORRECT+1}" ]]
+then
+  abort 'Bash must not run in POSIX mode. Please unset POSIXLY_CORRECT and try again.'
 fi
 
 # string formatters
@@ -94,6 +100,13 @@ else
   ohai 'Running in non-interactive mode because `$NONINTERACTIVE` is set.'
 fi
 
+# USER isn't always set so provide a fall back for the installer and subprocesses.
+if [[ -z "${USER-}" ]]
+then
+  USER="$(chomp "$(id -un)")"
+  export USER
+fi
+
 # First check OS.
 OS="$(uname)"
 if [[ "${OS}" == "Linux" ]]
@@ -129,6 +142,7 @@ then
   CHGRP=("/usr/bin/chgrp")
   GROUP="admin"
   TOUCH=("/usr/bin/touch")
+  INSTALL=("/usr/bin/install" -d -o "root" -g "wheel" -m "0755")
 else
   UNAME_MACHINE="$(uname -m)"
 
@@ -143,6 +157,7 @@ else
   CHGRP=("/bin/chgrp")
   GROUP="$(id -gn)"
   TOUCH=("/bin/touch")
+  INSTALL=("/usr/bin/install" -d -o "${USER}" -g "${GROUP}" -m "0755")
 fi
 CHMOD=("/bin/chmod")
 MKDIR=("/bin/mkdir" "-p")
@@ -286,6 +301,16 @@ version_lt() {
   [[ "${1%.*}" -lt "${2%.*}" ]] || [[ "${1%.*}" -eq "${2%.*}" && "${1#*.}" -lt "${2#*.}" ]]
 }
 
+check_run_command_as_root() {
+  [[ "${EUID:-${UID}}" == "0" ]] || return
+
+  # Allow Azure Pipelines/GitHub Actions/Docker/Concourse/Kubernetes to do everything as root (as it's normal there)
+  [[ -f /.dockerenv ]] && return
+  [[ -f /proc/1/cgroup ]] && grep -E "azpl_job|actions_job|docker|garden|kubepods" -q /proc/1/cgroup && return
+
+  abort "Don't run this as root!"
+}
+
 should_install_command_line_tools() {
   if [[ -n "${HOMEBREW_ON_LINUX-}" ]]
   then
@@ -413,13 +438,6 @@ EOABORT
   )"
 fi
 
-# USER isn't always set so provide a fall back for the installer and subprocesses.
-if [[ -z "${USER-}" ]]
-then
-  USER="$(chomp "$(id -un)")"
-  export USER
-fi
-
 # Invalidate sudo timestamp before exiting (if it wasn't active before).
 if [[ -x /usr/bin/sudo ]] && ! /usr/bin/sudo -n -v 2>/dev/null
 then
@@ -531,15 +549,7 @@ else
 fi
 HOMEBREW_CORE="${HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-core"
 
-if [[ "${EUID:-${UID}}" == "0" ]]
-then
-  # Allow Azure Pipelines/GitHub Actions/Docker/Concourse/Kubernetes to do everything as root (as it's normal there)
-  if ! [[ -f /proc/1/cgroup ]] ||
-     ! grep -E "azpl_job|actions_job|docker|garden|kubepods" -q /proc/1/cgroup
-  then
-    abort "Don't run this as root!"
-  fi
-fi
+check_run_command_as_root
 
 if [[ -d "${HOMEBREW_PREFIX}" && ! -x "${HOMEBREW_PREFIX}" ]]
 then
@@ -588,7 +598,7 @@ Your Mac OS X version is too old. See:
   ${tty_underline}https://github.com/mistydemeo/tigerbrew${tty_reset}
 EOABORT
     )"
-  elif version_lt "${macos_version}" "10.10"
+  elif version_lt "${macos_version}" "10.11"
   then
     abort "Your OS X version is too old."
   elif version_ge "${macos_version}" "${MACOS_NEWEST_UNSUPPORTED}" ||
@@ -763,6 +773,12 @@ then
   additional_shellenv_commands+=("export HOMEBREW_CORE_GIT_REMOTE=\"${HOMEBREW_CORE_GIT_REMOTE}\"")
 fi
 
+if [[ -n "${HOMEBREW_INSTALL_FROM_API-}" ]]
+then
+  ohai "HOMEBREW_INSTALL_FROM_API is set."
+  echo "Homebrew/homebrew-core will not be tapped during this ${tty_bold}install${tty_reset} run."
+fi
+
 ohai "安装提示"
 
 echo "中文安装教程（建议收藏）：https://brew.idayer.com/"
@@ -826,13 +842,7 @@ then
     execute_sudo "${CHGRP[@]}" "${GROUP}" "${chgrps[@]}"
   fi
 else
-  execute_sudo "${MKDIR[@]}" "${HOMEBREW_PREFIX}"
-  if [[ -z "${HOMEBREW_ON_LINUX-}" ]]
-  then
-    execute_sudo "${CHOWN[@]}" "root:wheel" "${HOMEBREW_PREFIX}"
-  else
-    execute_sudo "${CHOWN[@]}" "${USER}:${GROUP}" "${HOMEBREW_PREFIX}"
-  fi
+  execute_sudo "${INSTALL[@]}" "${HOMEBREW_PREFIX}"
 fi
 
 if [[ "${#mkdirs[@]}" -gt 0 ]]
@@ -954,7 +964,16 @@ ohai "Downloading and installing Homebrew..."
     fi
   fi
 
-  if [[ ! -d "${HOMEBREW_CORE}" ]]
+  if [[ -n "${HOMEBREW_INSTALL_FROM_API-}" ]]
+  then
+    # shellcheck disable=SC2016
+    ohai 'Skip tapping homebrew/core because `$HOMEBREW_INSTALL_FROM_API` is set.'
+    # Unset HOMEBREW_DEVELOPER since it is no longer needed and causes warnings during brew update below
+    if [[ -n "${HOMEBREW_ON_LINUX-}" && (-n "${HOMEBREW_CURL_PATH-}" || -n "${HOMEBREW_GIT_PATH-}") ]]
+    then
+      export -n HOMEBREW_DEVELOPER
+    fi
+  elif [[ ! -d "${HOMEBREW_CORE}" ]]
   then
     ohai "Tapping homebrew/core"
     (
@@ -1030,10 +1049,13 @@ case "${SHELL}" in
     shell_profile="${HOME}/.profile"
     ;;
 esac
-if [[ "${UNAME_MACHINE}" == "arm64" ]] || [[ -n "${HOMEBREW_ON_LINUX-}" ]]
+
+# `which` is a shell function defined above.
+# shellcheck disable=SC2230
+if [[ "$(which brew)" != "${HOMEBREW_PREFIX}/bin/brew" ]]
 then
   warn "！！！！！！！！！！！ 重要  ！！！！！！！！！！！！！！！"
-  echo "切记执行环境变量设置！，如已执行过请忽略。"
+  echo "切记在终端执行环境变量设置！，如已执行过请忽略。"
   cat <<EOS
 - 执行下面命令将 Homebrew 到 ${tty_bold}PATH${tty_reset} 中:
     echo 'eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"' >> ${shell_profile}

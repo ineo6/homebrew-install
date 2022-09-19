@@ -7,7 +7,7 @@
 set -u
 
 abort() {
-  printf "%s\n" "$@"
+  printf "%s\n" "$@" >&2
   exit 1
 }
 
@@ -17,6 +17,12 @@ abort() {
 if [ -z "${BASH_VERSION:-}" ]
 then
   abort "Bash is required to interpret this script."
+fi
+
+# Check if script is run in POSIX mode
+if [[ -n "${POSIXLY_CORRECT+1}" ]]
+then
+  abort 'Bash must not run in POSIX mode. Please unset POSIXLY_CORRECT and try again.'
 fi
 
 shopt -s extglob
@@ -200,7 +206,7 @@ homebrew_prefix_candidates=()
 usage() {
   cat <<EOS
 Homebrew Uninstaller
-Usage: $0 [options]
+Usage: [NONINTERACTIVE=1] $0 [options]
     -p, --path=PATH  Sets Homebrew prefix. Defaults to ${homebrew_prefix_default}.
         --skip-cache-and-logs
                      Skips removal of HOMEBREW_CACHE and HOMEBREW_LOGS.
@@ -208,6 +214,7 @@ Usage: $0 [options]
     -q, --quiet      Suppress all output.
     -n, --dry-run    Simulate uninstall but don't remove anything.
     -h, --help       Display this message.
+    NONINTERACTIVE   Imply --force if NONINTERACTIVE is non-empty.
 EOS
   exit "${1:-0}"
 }
@@ -233,12 +240,13 @@ done
 # Attempt to locate Homebrew unless `--path` is passed
 if [[ "${#homebrew_prefix_candidates[@]}" -eq 0 ]]
 then
-  prefix="$(brew --prefix)"
+  prefix="$("${homebrew_prefix_default}"/bin/brew --prefix)"
   [[ -n "${prefix}" ]] && homebrew_prefix_candidates+=("${prefix}")
-  prefix="$(command -v brew)" || prefix=""
+  prefix="$(command -v "${homebrew_prefix_default}"/bin/brew)" || prefix=""
   [[ -n "${prefix}" ]] && homebrew_prefix_candidates+=("$(dirname "$(dirname "$(strip_s "${prefix}")")")")
-  homebrew_prefix_candidates+=("${homebrew_prefix_default}") # Homebrew default path
-  homebrew_prefix_candidates+=("${HOME}/.linuxbrew")         # Linuxbrew default path
+  homebrew_prefix_candidates+=("${homebrew_prefix_default}")                   # Homebrew default path
+  homebrew_prefix_candidates+=("${HOME}/.linuxbrew")                           # Linuxbrew default path
+  [[ "$(uname -m)" == "arm64" ]] && homebrew_prefix_candidates+=("/usr/local") # If migrated from Intel to ARM old path will remain
 fi
 
 HOMEBREW_PREFIX="$(
@@ -272,7 +280,7 @@ if [[ -s "${HOMEBREW_REPOSITORY}/.gitignore" ]]
 then
   gitignore="$(<"${HOMEBREW_REPOSITORY}/.gitignore")"
 else
-  gitignore=$(curl -fsSL https://cdn.jsdelivr.net/gh/Homebrew/brew/.gitignore)
+  gitignore=$(curl -fsSL https://gitee.com/ineo6/homebrew-install/raw/master/.gitignore)
 fi
 [[ -n "${gitignore}" ]] || abort "Failed to fetch Homebrew .gitignore!"
 
@@ -340,6 +348,14 @@ then
   dry_str="${opt_dry_run:+would}"
   warn "This script ${dry_str:-will} remove:"
   pretty_print_pathnames "${homebrew_files[@]}"
+fi
+
+# Always use single-quoted strings with `exp` expressions
+# shellcheck disable=SC2016
+if [[ -n "${NONINTERACTIVE-}" ]]
+then
+  ohai 'Running in non-interactive mode because `$NONINTERACTIVE` is set.'
+  opt_force=1
 fi
 
 if [[ -t 0 && -z "${opt_force}" && -z "${opt_dry_run}" ]]
