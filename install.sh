@@ -563,8 +563,7 @@ else
     abort "$(
       cat <<EOABORT
 Homebrew on Linux is not supported on ARM processors.
-You can try an alternate installation method instead:
-  ${tty_underline}https://docs.brew.sh/Homebrew-on-Linux#arm${tty_reset}
+  ${tty_underline}https://docs.brew.sh/Homebrew-on-Linux#arm-unsupported${tty_reset}
 EOABORT
     )"
   elif [[ "${UNAME_MACHINE}" != "x86_64" ]]
@@ -759,7 +758,7 @@ then
   additional_shellenv_commands+=("export HOMEBREW_CORE_GIT_REMOTE=\"${HOMEBREW_CORE_GIT_REMOTE}\"")
 fi
 
-if [[ -n "${HOMEBREW_INSTALL_FROM_API-}" ]]
+if [[ -z "${HOMEBREW_NO_INSTALL_FROM_API-}" && -n "${HOMEBREW_INSTALL_FROM_API-}" ]]
 then
   ohai "HOMEBREW_INSTALL_FROM_API is set."
   echo "Homebrew/homebrew-core will not be tapped during this ${tty_bold}install${tty_reset} run."
@@ -903,7 +902,7 @@ fi
 if should_install_command_line_tools && test -t 0
 then
   ohai "Installing the Command Line Tools (expect a GUI popup):"
-  execute_sudo "/usr/bin/xcode-select" "--install"
+  execute "/usr/bin/xcode-select" "--install"
   echo "Press any key when the installation has completed."
   getc
   execute_sudo "/usr/bin/xcode-select" "--switch" "/Library/Developer/CommandLineTools"
@@ -953,7 +952,7 @@ ohai "Downloading and installing Homebrew..."
     fi
   fi
 
-  if [[ -n "${HOMEBREW_INSTALL_FROM_API-}" ]]
+  if [[ -z "${HOMEBREW_NO_INSTALL_FROM_API-}" && -n "${HOMEBREW_INSTALL_FROM_API-}" ]]
   then
     # shellcheck disable=SC2016
     ohai 'Skip tapping homebrew/core because `$HOMEBREW_INSTALL_FROM_API` is set.'
@@ -1060,9 +1059,9 @@ then
   then
     plural="s"
   fi
-  printf "- Run these commands in your terminal to add the non-default Git remote%s for %s:" "${plural}" "${non_default_repos}"
-  printf "    echo '# Set PATH, MANPATH, etc., for Homebrew.' >> %s" "${shell_profile}"
-  printf "    echo '%s' >> %s\n" "${additional_shellenv_commands[@]}" "${shell_profile}"
+  printf -- "- Run these commands in your terminal to add the non-default Git remote%s for %s:\n" "${plural}" "${non_default_repos}"
+  printf "    echo '# Set PATH, MANPATH, etc., for Homebrew.' >> %s\n" "${shell_profile}"
+  printf "    echo '%s' >> ${shell_profile}\n" "${additional_shellenv_commands[@]}"
   printf "    %s\n" "${additional_shellenv_commands[@]}"
 fi
 
