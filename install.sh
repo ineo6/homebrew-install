@@ -170,9 +170,13 @@ HOMEBREW_BREW_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
 #HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/homebrew-core"
 HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
 
+HOMEBREW_CASK_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-cask.git"
+HOMEBREW_SERVICES_DEFAULT_GIT_REMOTE="https://gitlab.com/mirrorx/homebrew-services.git"
+
 # Use remote URLs of Homebrew repositories from environment if set.
 HOMEBREW_BREW_GIT_REMOTE="${HOMEBREW_BREW_GIT_REMOTE:-"${HOMEBREW_BREW_DEFAULT_GIT_REMOTE}"}"
 HOMEBREW_CORE_GIT_REMOTE="${HOMEBREW_CORE_GIT_REMOTE:-"${HOMEBREW_CORE_DEFAULT_GIT_REMOTE}"}"
+HOMEBREW_CASK_GIT_REMOTE="${HOMEBREW_CASK_GIT_REMOTE:-"${HOMEBREW_CASK_DEFAULT_GIT_REMOTE}"}"
 # The URLs with and without the '.git' suffix are the same Git remote. Do not prompt.
 if [[ "${HOMEBREW_BREW_GIT_REMOTE}" == "${HOMEBREW_BREW_DEFAULT_GIT_REMOTE}.git" ]]
 then
@@ -181,6 +185,10 @@ fi
 if [[ "${HOMEBREW_CORE_GIT_REMOTE}" == "${HOMEBREW_CORE_DEFAULT_GIT_REMOTE}.git" ]]
 then
   HOMEBREW_CORE_GIT_REMOTE="${HOMEBREW_CORE_DEFAULT_GIT_REMOTE}"
+fi
+if [[ "${HOMEBREW_CASK_GIT_REMOTE}" == "${HOMEBREW_CASK_DEFAULT_GIT_REMOTE}.git" ]]
+then
+  HOMEBREW_CASK_GIT_REMOTE="${HOMEBREW_CASK_DEFAULT_GIT_REMOTE}"
 fi
 export HOMEBREW_{BREW,CORE}_GIT_REMOTE
 
@@ -534,6 +542,8 @@ EOABORT
   )"
 fi
 HOMEBREW_CORE="${HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-core"
+HOMEBREW_CASK="${HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-cask"
+HOMEBREW_SERVICES="${HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-services"
 
 check_run_command_as_root
 
@@ -758,6 +768,14 @@ then
   additional_shellenv_commands+=("export HOMEBREW_CORE_GIT_REMOTE=\"${HOMEBREW_CORE_GIT_REMOTE}\"")
 fi
 
+if [[ "${HOMEBREW_CASK_DEFAULT_GIT_REMOTE}" != "${HOMEBREW_CASK_GIT_REMOTE}" ]]
+then
+  ohai "HOMEBREW_CASK_GIT_REMOTE is set to a non-default URL:"
+  echo "${tty_underline}${HOMEBREW_CASK_GIT_REMOTE}${tty_reset} will be used as the Homebrew/homebrew-core Git remote."
+  non_default_repos="${non_default_repos:-}${non_default_repos:+ and }Homebrew/homebrew-core"
+  additional_shellenv_commands+=("export HOMEBREW_CASK_GIT_REMOTE=\"${HOMEBREW_CASK_GIT_REMOTE}\"")
+fi
+
 if [[ -z "${HOMEBREW_NO_INSTALL_FROM_API-}" && -n "${HOMEBREW_INSTALL_FROM_API-}" ]]
 then
   ohai "HOMEBREW_INSTALL_FROM_API is set."
@@ -767,6 +785,8 @@ fi
 ohai "安装提示"
 
 echo "中文安装教程（建议收藏）：https://brew.idayer.com/"
+
+echo "也可以查阅，Mac下镜像飞速安装Homebrew教程 ：https://zhuanlan.zhihu.com/p/90508170"
 
 echo "如果你想换源，可以使用镜像助手：https://brew.idayer.com/guide/change-source/"
 
@@ -961,26 +981,67 @@ ohai "Downloading and installing Homebrew..."
     then
       export -n HOMEBREW_DEVELOPER
     fi
-  elif [[ ! -d "${HOMEBREW_CORE}" ]]
-  then
-    ohai "Tapping homebrew/core"
-    (
-      execute "${MKDIR[@]}" "${HOMEBREW_CORE}"
-      cd "${HOMEBREW_CORE}" >/dev/null || return
+  else
+    if [[ ! -d "${HOMEBREW_CORE}" ]]
+    then
+      ohai "Tapping homebrew/core"
+      (
+        execute "${MKDIR[@]}" "${HOMEBREW_CORE}"
+        cd "${HOMEBREW_CORE}" >/dev/null || return
 
-      execute "git" "init" "-q"
-      execute "git" "config" "remote.origin.url" "${HOMEBREW_CORE_GIT_REMOTE}"
-      execute "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
-      execute "git" "config" "--bool" "core.autocrlf" "false"
-      execute "git" "config" "--bool" "core.symlinks" "true"
-      execute "git" "fetch" "--force" "origin" "refs/heads/master:refs/remotes/origin/master"
-      execute "git" "remote" "set-head" "origin" "--auto" >/dev/null
-      execute "git" "reset" "--hard" "origin/master"
+        execute "git" "init" "-q"
+        execute "git" "config" "remote.origin.url" "${HOMEBREW_CORE_GIT_REMOTE}"
+        execute "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
+        execute "git" "config" "--bool" "core.autocrlf" "false"
+        execute "git" "config" "--bool" "core.symlinks" "true"
+        execute "git" "fetch" "--force" "origin" "refs/heads/master:refs/remotes/origin/master"
+        execute "git" "remote" "set-head" "origin" "--auto" >/dev/null
+        execute "git" "reset" "--hard" "origin/master"
 
-      cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
-    ) || exit 1
+        cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
+      ) || exit 1
+
+      if [[ ! -d "${HOMEBREW_CASK}" ]]
+      then
+        ohai "Tapping homebrew/cask"
+        (
+          execute "${MKDIR[@]}" "${HOMEBREW_CASK}"
+          cd "${HOMEBREW_CASK}" >/dev/null || return
+
+          execute "git" "init" "-q"
+          execute "git" "config" "remote.origin.url" "${HOMEBREW_CASK_GIT_REMOTE}"
+          execute "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
+          execute "git" "config" "--bool" "core.autocrlf" "false"
+          execute "git" "config" "--bool" "core.symlinks" "true"
+          execute "git" "fetch" "--force" "origin" "refs/heads/master:refs/remotes/origin/master"
+          execute "git" "remote" "set-head" "origin" "--auto" >/dev/null
+          execute "git" "reset" "--hard" "origin/master"
+
+          cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
+        ) || exit 1
+      fi
+
+      if [[ ! -d "${HOMEBREW_SERVICES}" ]]
+      then
+        ohai "Tapping homebrew/services"
+        (
+          execute "${MKDIR[@]}" "${HOMEBREW_SERVICES}"
+          cd "${HOMEBREW_SERVICES}" >/dev/null || return
+
+          execute "git" "init" "-q"
+          execute "git" "config" "remote.origin.url" "${HOMEBREW_SERVICES_DEFAULT_GIT_REMOTE}"
+          execute "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
+          execute "git" "config" "--bool" "core.autocrlf" "false"
+          execute "git" "config" "--bool" "core.symlinks" "true"
+          execute "git" "fetch" "--force" "origin" "refs/heads/master:refs/remotes/origin/master"
+          execute "git" "remote" "set-head" "origin" "--auto" >/dev/null
+          execute "git" "reset" "--hard" "origin/master"
+
+          cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
+        ) || exit 1
+      fi
+    fi
   fi
-
   execute "${HOMEBREW_PREFIX}/bin/brew" "update" "--force" "--quiet"
 ) || exit 1
 
@@ -1065,11 +1126,6 @@ then
   printf "    %s\n" "${additional_shellenv_commands[@]}"
 fi
 
-echo "- 🎉 恭喜，安装成功！运行 \`brew help\` 开始体验吧"
-echo "- 更多文档: "
-echo "    ${tty_underline}https://docs.brew.sh${tty_reset}"
-echo "    ${tty_underline}https://brew.idayer.com${tty_reset}"
-
 if [[ -n "${HOMEBREW_ON_LINUX-}" ]]
 then
   echo "- Install Homebrew's dependencies if you have sudo access:"
@@ -1097,8 +1153,9 @@ EOS
 fi
 
 cat <<EOS
-- Run ${tty_bold}brew help${tty_reset} to get started
-- Further documentation:
+- 🎉 恭喜，安装成功！运行  ${tty_bold}brew help${tty_reset} 开始体验吧
+- 更多文档:
+    ${tty_underline}https://brew.idayer.com${tty_reset}
     ${tty_underline}https://docs.brew.sh${tty_reset}
 
 EOS

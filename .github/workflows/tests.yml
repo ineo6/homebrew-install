@@ -96,8 +96,10 @@ jobs:
         run: |
           HOMEBREW_BREW_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/brew"
           HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/homebrew-core"
+          HOMEBREW_CASK_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/homebrew-cask"
           export HOMEBREW_BREW_GIT_REMOTE="${HOMEBREW_BREW_DEFAULT_GIT_REMOTE/#https/git}"
           export HOMEBREW_CORE_GIT_REMOTE="${HOMEBREW_CORE_DEFAULT_GIT_REMOTE/#https/git}"
+          export HOMEBREW_CASK_GIT_REMOTE="${HOMEBREW_CASK_DEFAULT_GIT_REMOTE/#https/git}"
           /bin/bash -c "$(cat install.sh)"
 
       - run: brew config
