@@ -90,11 +90,11 @@ jobs:
           chmod 755 /usr/local/bin/brew
 
       - name: Set up WSL environment 2
-          if: runner.os == 'windows'
-          run: |
-            echo "HOMEBREW_BREW_GIT_REMOTE=https://github.com/Homebrew/brew" >> $GITHUB_ENV
-            echo "HOMEBREW_CORE_GIT_REMOTE=https://github.com/Homebrew/homebrew-core" >> $GITHUB_ENV
-            echo "HOMEBREW_CASK_GIT_REMOTE=https://github.com/Homebrew/homebrew-cask" >> $GITHUB_ENV
+        if: runner.os == 'windows'
+        run: |
+          echo "HOMEBREW_BREW_GIT_REMOTE=https://github.com/Homebrew/brew" >> $GITHUB_ENV
+          echo "HOMEBREW_CORE_GIT_REMOTE=https://github.com/Homebrew/homebrew-core" >> $GITHUB_ENV
+          echo "HOMEBREW_CASK_GIT_REMOTE=https://github.com/Homebrew/homebrew-cask" >> $GITHUB_ENV
 
       - run: /bin/bash -c "$(cat install.sh)"
 
