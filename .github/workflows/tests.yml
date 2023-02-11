@@ -6,6 +6,10 @@ on:
   pull_request:
 permissions:
   contents: read
+env:
+  HOMEBREW_BREW_GIT_REMOTE: https://github.com/Homebrew/brew
+  HOMEBREW_CORE_GIT_REMOTE: https://github.com/Homebrew/homebrew-core
+  HOMEBREW_CASK_GIT_REMOTE: https://github.com/Homebrew/homebrew-cask
 
 jobs:
   tests:
@@ -36,12 +40,6 @@ jobs:
 
       - name: Set up Git repository
         uses: actions/checkout@main
-
-      - name: Set up Env
-        run: |
-          export HOMEBREW_BREW_GIT_REMOTE="https://github.com/Homebrew/brew"
-          export HOMEBREW_CORE_GIT_REMOTE="https://github.com/Homebrew/homebrew-core"
-          export HOMEBREW_CASK_GIT_REMOTE="https://github.com/Homebrew/homebrew-cask"
 
       - name: Cleanup macOS
         if: runner.os == 'macOS'
