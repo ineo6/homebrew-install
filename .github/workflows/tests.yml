@@ -18,26 +18,16 @@ jobs:
         os:
           - macOS-latest
           - ubuntu-latest
-          - windows-latest
         include:
           - os: macOS-latest
             shell: bash
           - os: ubuntu-latest
             shell: bash
-          - os: windows-latest
-            shell: "wsl-bash {0}"
     runs-on: ${{matrix.os}}
     defaults:
       run:
         shell: ${{ matrix.shell }}
     steps:
-      - name: Set up WSL
-        if: runner.os == 'windows'
-        shell: powershell
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
-
       - name: Set up Git repository
         uses: actions/checkout@main
 
@@ -47,14 +37,6 @@ jobs:
           sudo rm -rf /Applications/Xcode.app \
                       /Library/Developer/CommandLineTools
           sudo xcode-select --reset
-
-      - name: Install WSL
-        if: runner.os == 'windows'
-        uses: Vampire/setup-wsl@9cf1811ad062b08e0106e50f2d9a916ebabae257
-        with:
-          distribution: Ubuntu-22.04
-          wsl-shell-user: runner
-          additional-packages: build-essential
 
       - name: Check Bash 3.x syntax
         if: runner.os == 'macOS'
@@ -79,22 +61,6 @@ jobs:
             /bin/bash uninstall.sh -n >/dev/null
             /bin/bash uninstall.sh -f >/dev/null
           fi
-
-      - name: Set up WSL environment
-        if: runner.os == 'windows'
-        shell: "wsl-bash -u root {0}"
-        run: |
-          echo "runner ALL=(ALL) NOPASSWD:ALL" | tee /etc/sudoers.d/runner
-          chmod 644 /etc/sudoers.d/runner
-          echo -e "#!/bin/bash\nexec /home/linuxbrew/.linuxbrew/bin/brew \"\$@\"" | tee /usr/local/bin/brew
-          chmod 755 /usr/local/bin/brew
-
-      - name: Set up WSL environment 2
-        if: runner.os == 'windows'
-        run: |
-          echo "HOMEBREW_BREW_GIT_REMOTE=https://github.com/Homebrew/brew" >> $GITHUB_ENV
-          echo "HOMEBREW_CORE_GIT_REMOTE=https://github.com/Homebrew/homebrew-core" >> $GITHUB_ENV
-          echo "HOMEBREW_CASK_GIT_REMOTE=https://github.com/Homebrew/homebrew-cask" >> $GITHUB_ENV
 
       - run: /bin/bash -c "$(cat install.sh)"
 
