@@ -4,6 +4,9 @@ on:
     branches:
       - master
   pull_request:
+permissions:
+  contents: read
+
 jobs:
   tests:
     strategy:
@@ -34,6 +37,12 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@main
 
+      - name: Set up Env
+        run: |
+          export HOMEBREW_BREW_GIT_REMOTE="https://github.com/Homebrew/brew"
+          export HOMEBREW_CORE_GIT_REMOTE="https://github.com/Homebrew/homebrew-core"
+          export HOMEBREW_CASK_GIT_REMOTE="https://github.com/Homebrew/homebrew-cask"
+
       - name: Cleanup macOS
         if: runner.os == 'macOS'
         run: |
@@ -43,10 +52,9 @@ jobs:
 
       - name: Install WSL
         if: runner.os == 'windows'
-        # https://github.com/Vampire/setup-wsl/releases/tag/v1.1.0
-        uses: Vampire/setup-wsl@c8afb39d908a55f133accd98a27e160edc255810
+        uses: Vampire/setup-wsl@9cf1811ad062b08e0106e50f2d9a916ebabae257
         with:
-          distribution: Ubuntu-16.04
+          distribution: Ubuntu-22.04
           wsl-shell-user: runner
           additional-packages: build-essential
 
@@ -90,23 +98,6 @@ jobs:
       - run: brew install ack
 
       - run: /bin/bash uninstall.sh -f >/dev/null
-
-      - name: Install Homebrew with non-default remotes
-        # Use the default remotes but with Git Protocol
-        run: |
-          HOMEBREW_BREW_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/brew"
-          HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/homebrew-core"
-          HOMEBREW_CASK_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/homebrew-cask"
-          export HOMEBREW_BREW_GIT_REMOTE="${HOMEBREW_BREW_DEFAULT_GIT_REMOTE/#https/git}"
-          export HOMEBREW_CORE_GIT_REMOTE="${HOMEBREW_CORE_DEFAULT_GIT_REMOTE/#https/git}"
-          export HOMEBREW_CASK_GIT_REMOTE="${HOMEBREW_CASK_DEFAULT_GIT_REMOTE/#https/git}"
-          /bin/bash -c "$(cat install.sh)"
-
-      - run: brew config
-
-      - run: |
-          /bin/bash uninstall.sh -f >/dev/null
-          unset HOMEBREW_{BREW,CORE}{,_DEFAULT}_GIT_REMOTE
 
       - run: /bin/bash -c "$(cat install.sh)"
 

@@ -165,12 +165,12 @@ CHMOD=("/bin/chmod")
 MKDIR=("/bin/mkdir" "-p")
 #changed
 #HOMEBREW_BREW_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/brew"
-HOMEBREW_BREW_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+HOMEBREW_BREW_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew"
 #changed
 #HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/homebrew-core"
-HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core"
 
-HOMEBREW_CASK_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-cask.git"
+HOMEBREW_CASK_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-cask"
 HOMEBREW_SERVICES_DEFAULT_GIT_REMOTE="https://gitlab.com/mirrorx/homebrew-services.git"
 
 # Use remote URLs of Homebrew repositories from environment if set.
