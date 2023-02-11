@@ -88,6 +88,9 @@ jobs:
           chmod 644 /etc/sudoers.d/runner
           echo -e "#!/bin/bash\nexec /home/linuxbrew/.linuxbrew/bin/brew \"\$@\"" | tee /usr/local/bin/brew
           chmod 755 /usr/local/bin/brew
+          "HOMEBREW_BREW_GIT_REMOTE=${env:HOMEBREW_BREW_GIT_REMOTE}" >> $env:GITHUB_ENV
+          "HOMEBREW_CORE_GIT_REMOTE=${env:HOMEBREW_CORE_GIT_REMOTE}" >> $env:GITHUB_ENV
+          "HOMEBREW_CASK_GIT_REMOTE=${env:HOMEBREW_CASK_GIT_REMOTE}" >> $env:GITHUB_ENV
 
       - run: /bin/bash -c "$(cat install.sh)"
 
