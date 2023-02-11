@@ -88,9 +88,13 @@ jobs:
           chmod 644 /etc/sudoers.d/runner
           echo -e "#!/bin/bash\nexec /home/linuxbrew/.linuxbrew/bin/brew \"\$@\"" | tee /usr/local/bin/brew
           chmod 755 /usr/local/bin/brew
-          "HOMEBREW_BREW_GIT_REMOTE=https://github.com/Homebrew/brew" >> $env:GITHUB_ENV
-          "HOMEBREW_CORE_GIT_REMOTE=https://github.com/Homebrew/homebrew-core" >> $env:GITHUB_ENV
-          "HOMEBREW_CASK_GIT_REMOTE=https://github.com/Homebrew/homebrew-cask" >> $env:GITHUB_ENV
+
+      - name: Set up WSL environment 2
+          if: runner.os == 'windows'
+          run: |
+            echo "HOMEBREW_BREW_GIT_REMOTE=https://github.com/Homebrew/brew" >> $GITHUB_ENV
+            echo "HOMEBREW_CORE_GIT_REMOTE=https://github.com/Homebrew/homebrew-core" >> $GITHUB_ENV
+            echo "HOMEBREW_CASK_GIT_REMOTE=https://github.com/Homebrew/homebrew-cask" >> $GITHUB_ENV
 
       - run: /bin/bash -c "$(cat install.sh)"
 
