@@ -114,7 +114,6 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
         location={location}
         navPrefix={
           <div style={{ display: 'inline-block' }}>
-            <WaimaiBanner />
             <SearchBar />
           </div>
         }
