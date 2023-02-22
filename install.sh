@@ -776,10 +776,10 @@ then
   additional_shellenv_commands+=("export HOMEBREW_CASK_GIT_REMOTE=\"${HOMEBREW_CASK_GIT_REMOTE}\"")
 fi
 
-if [[ -z "${HOMEBREW_NO_INSTALL_FROM_API-}" && -n "${HOMEBREW_INSTALL_FROM_API-}" ]]
+if [[ -n "${HOMEBREW_NO_INSTALL_FROM_API-}" ]]
 then
-  ohai "HOMEBREW_INSTALL_FROM_API is set."
-  echo "Homebrew/homebrew-core will not be tapped during this ${tty_bold}install${tty_reset} run."
+  ohai "HOMEBREW_NO_INSTALL_FROM_API is set."
+  echo "Homebrew/homebrew-core will be tapped during this ${tty_bold}install${tty_reset} run."
 fi
 
 ohai "安装提示"
@@ -972,25 +972,61 @@ ohai "Downloading and installing Homebrew..."
     fi
   fi
 
-  if [[ -z "${HOMEBREW_NO_INSTALL_FROM_API-}" && -n "${HOMEBREW_INSTALL_FROM_API-}" ]]
+  if [[ -n "${HOMEBREW_NO_INSTALL_FROM_API-}" && ! -d "${HOMEBREW_CORE}" ]]
   then
+    # Always use single-quoted strings with `exp` expressions
     # shellcheck disable=SC2016
-    ohai 'Skip tapping homebrew/core because `$HOMEBREW_INSTALL_FROM_API` is set.'
-    # Unset HOMEBREW_DEVELOPER since it is no longer needed and causes warnings during brew update below
-    if [[ -n "${HOMEBREW_ON_LINUX-}" && (-n "${HOMEBREW_CURL_PATH-}" || -n "${HOMEBREW_GIT_PATH-}") ]]
+    ohai 'Tapping homebrew/core because `$HOMEBREW_NO_INSTALL_FROM_API` is set.'
+    (
+      execute "${MKDIR[@]}" "${HOMEBREW_CORE}"
+      cd "${HOMEBREW_CORE}" >/dev/null || return
+
+      execute "git" "init" "-q"
+      execute "git" "config" "remote.origin.url" "${HOMEBREW_CORE_GIT_REMOTE}"
+      execute "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
+      execute "git" "config" "--bool" "core.autocrlf" "false"
+      execute "git" "config" "--bool" "core.symlinks" "true"
+      execute "git" "fetch" "--force" "origin" "refs/heads/master:refs/remotes/origin/master"
+      execute "git" "remote" "set-head" "origin" "--auto" >/dev/null
+      execute "git" "reset" "--hard" "origin/master"
+
+      cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
+    ) || exit 1
+  fi
+
+  if [[ -n "${HOMEBREW_NO_INSTALL_FROM_API-}" && ! -d "${HOMEBREW_CASK}" ]]
+  then
+    # Always use single-quoted strings with `exp` expressions
+    # shellcheck disable=SC2016
+    ohai 'Tapping homebrew/cask because `$HOMEBREW_NO_INSTALL_FROM_API` is set.'
+    (
+      execute "${MKDIR[@]}" "${HOMEBREW_CASK}"
+      cd "${HOMEBREW_CASK}" >/dev/null || return
+
+      execute "git" "init" "-q"
+      execute "git" "config" "remote.origin.url" "${HOMEBREW_CASK_GIT_REMOTE}"
+      execute "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
+      execute "git" "config" "--bool" "core.autocrlf" "false"
+      execute "git" "config" "--bool" "core.symlinks" "true"
+      execute "git" "fetch" "--force" "origin" "refs/heads/master:refs/remotes/origin/master"
+      execute "git" "remote" "set-head" "origin" "--auto" >/dev/null
+      execute "git" "reset" "--hard" "origin/master"
+
+      cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
+    ) || exit 1
+  fi
+
+  if [[ -n "${HOMEBREW_NO_INSTALL_FROM_API-}" && ! -d "${HOMEBREW_SERVICES}" ]]
     then
-      export -n HOMEBREW_DEVELOPER
-    fi
-  else
-    if [[ ! -d "${HOMEBREW_CORE}" ]]
-    then
-      ohai "Tapping homebrew/core"
+      # Always use single-quoted strings with `exp` expressions
+      # shellcheck disable=SC2016
+      ohai 'Tapping homebrew/services because `$HOMEBREW_NO_INSTALL_FROM_API` is set.'
       (
-        execute "${MKDIR[@]}" "${HOMEBREW_CORE}"
-        cd "${HOMEBREW_CORE}" >/dev/null || return
+        execute "${MKDIR[@]}" "${HOMEBREW_SERVICES}"
+        cd "${HOMEBREW_SERVICES}" >/dev/null || return
 
         execute "git" "init" "-q"
-        execute "git" "config" "remote.origin.url" "${HOMEBREW_CORE_GIT_REMOTE}"
+        execute "git" "config" "remote.origin.url" "${HOMEBREW_SERVICES_DEFAULT_GIT_REMOTE}"
         execute "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
         execute "git" "config" "--bool" "core.autocrlf" "false"
         execute "git" "config" "--bool" "core.symlinks" "true"
@@ -1000,47 +1036,6 @@ ohai "Downloading and installing Homebrew..."
 
         cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
       ) || exit 1
-
-      if [[ ! -d "${HOMEBREW_CASK}" ]]
-      then
-        ohai "Tapping homebrew/cask"
-        (
-          execute "${MKDIR[@]}" "${HOMEBREW_CASK}"
-          cd "${HOMEBREW_CASK}" >/dev/null || return
-
-          execute "git" "init" "-q"
-          execute "git" "config" "remote.origin.url" "${HOMEBREW_CASK_GIT_REMOTE}"
-          execute "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
-          execute "git" "config" "--bool" "core.autocrlf" "false"
-          execute "git" "config" "--bool" "core.symlinks" "true"
-          execute "git" "fetch" "--force" "origin" "refs/heads/master:refs/remotes/origin/master"
-          execute "git" "remote" "set-head" "origin" "--auto" >/dev/null
-          execute "git" "reset" "--hard" "origin/master"
-
-          cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
-        ) || exit 1
-      fi
-
-      if [[ ! -d "${HOMEBREW_SERVICES}" ]]
-      then
-        ohai "Tapping homebrew/services"
-        (
-          execute "${MKDIR[@]}" "${HOMEBREW_SERVICES}"
-          cd "${HOMEBREW_SERVICES}" >/dev/null || return
-
-          execute "git" "init" "-q"
-          execute "git" "config" "remote.origin.url" "${HOMEBREW_SERVICES_DEFAULT_GIT_REMOTE}"
-          execute "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
-          execute "git" "config" "--bool" "core.autocrlf" "false"
-          execute "git" "config" "--bool" "core.symlinks" "true"
-          execute "git" "fetch" "--force" "origin" "refs/heads/master:refs/remotes/origin/master"
-          execute "git" "remote" "set-head" "origin" "--auto" >/dev/null
-          execute "git" "reset" "--hard" "origin/master"
-
-          cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
-        ) || exit 1
-      fi
-    fi
   fi
   execute "${HOMEBREW_PREFIX}/bin/brew" "update" "--force" "--quiet"
 ) || exit 1
