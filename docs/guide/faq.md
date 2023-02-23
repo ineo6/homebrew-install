@@ -4,6 +4,29 @@ order: 4
 
 # FAQ
 
+## 解决 https://formulae.brew.sh/api/formula.json 失败问题
+
+临时设置可以直接在终端执行`export HOMEBREW_NO_INSTALL_FROM_API=1`
+
+下面是设置永久效果，`zprofile`可以自行替换为`zshrc`。
+
+```shell
+echo 'export HOMEBREW_NO_INSTALL_FROM_API=1' >> ~/.zprofile
+source ~/.zprofile
+```
+
+## 终端设置代理
+
+注意下面的`1088`端口，需要从代理软件中找到`http`端口并替换。
+
+```shell
+// 给终端设置代理
+export http_proxy=127.0.0.1:1088;export https_proxy=$http_proxy;export all_proxy=$http_proxy
+
+// 取消代理设置
+unset http_proxy;unset https_proxy;unset all_proxy
+```
+
 ## No.1 的小秘籍
 
 遇到解决不了的问题，先删除`homebrew`目录再重新运行脚本安装。
@@ -77,7 +100,6 @@ git config --global http.sslVerify false
 
 代理使用可以参考以下文章：
 
-- [Mac 终端走 ssr 代理](http://onwaier.com/?p=229)
 - [如何让 macOS 的「终端」走代理？](https://www.xiaodefa.com/digital/121.html)
 
 ## brew install xxx 404 的问题
