@@ -27,6 +27,17 @@ export http_proxy=127.0.0.1:1088;export https_proxy=$http_proxy;export all_proxy
 unset http_proxy;unset https_proxy;unset all_proxy
 ```
 
+## 取消 git 代理
+
+当遇到包含"Unsupported proxy syntax in"提示的问题是，和可能是设置了`git`代理，同时代理无法访问。
+
+这个时候可以考虑重新打开代理，另外的方案就是取消代理方式：
+
+```shell
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+```
+
 ## No.1 的小秘籍
 
 遇到解决不了的问题，先删除`homebrew`目录再重新运行脚本安装。
