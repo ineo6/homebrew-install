@@ -50,6 +50,7 @@ tty_mkbold() { tty_escape "1;$1"; }
 tty_underline="$(tty_escape "4;39")"
 tty_blue="$(tty_mkbold 34)"
 tty_red="$(tty_mkbold 31)"
+tty_green="$(tty_mkbold 32)"
 tty_bold="$(tty_mkbold 39)"
 tty_reset="$(tty_escape 0)"
 
@@ -74,6 +75,18 @@ ohai() {
 
 warn() {
   printf "${tty_red}Warning${tty_reset}: %s\n" "$(chomp "$1")"
+}
+
+checkExecute() {
+    if [ $? -ne 0 ];then
+        echo "${tty_red}执行成功 '$1'${tty_reset}"
+        if [[ "$2" == 'out' ]]; then
+          exit 0
+        fi
+    else
+        echo "${tty_green}执行成功${tty_reset}"
+
+    fi
 }
 
 # Check if script is run non-interactively (e.g. CI)
@@ -163,6 +176,7 @@ else
 fi
 CHMOD=("/bin/chmod")
 MKDIR=("/bin/mkdir" "-p")
+
 #changed
 #HOMEBREW_BREW_DEFAULT_GIT_REMOTE="https://github.com/Homebrew/brew"
 HOMEBREW_BREW_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
@@ -172,6 +186,8 @@ HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
 
 HOMEBREW_CASK_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-cask.git"
 HOMEBREW_SERVICES_DEFAULT_GIT_REMOTE="https://gitlab.com/mirrorx/homebrew-services.git"
+
+HOMEBREW_API_DEFAULT_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 
 # Use remote URLs of Homebrew repositories from environment if set.
 HOMEBREW_BREW_GIT_REMOTE="${HOMEBREW_BREW_GIT_REMOTE:-"${HOMEBREW_BREW_DEFAULT_GIT_REMOTE}"}"
@@ -191,6 +207,7 @@ then
   HOMEBREW_CASK_GIT_REMOTE="${HOMEBREW_CASK_DEFAULT_GIT_REMOTE}"
 fi
 export HOMEBREW_{BREW,CORE}_GIT_REMOTE
+export HOMEBREW_API_DEFAULT_DOMAIN
 
 # TODO: bump version when new macOS is released or announced
 MACOS_NEWEST_UNSUPPORTED="14.0"
@@ -624,14 +641,6 @@ EOS
   fi
 fi
 
-ohai "This script will install:"
-echo "${HOMEBREW_PREFIX}/bin/brew"
-echo "${HOMEBREW_PREFIX}/share/doc/homebrew"
-echo "${HOMEBREW_PREFIX}/share/man/man1/brew.1"
-echo "${HOMEBREW_PREFIX}/share/zsh/site-functions/_brew"
-echo "${HOMEBREW_PREFIX}/etc/bash_completion.d/brew"
-echo "${HOMEBREW_REPOSITORY}"
-
 # Keep relatively in sync with
 # https://github.com/Homebrew/brew/blob/master/Library/Homebrew/keg.rb
 directories=(
@@ -786,7 +795,7 @@ ohai "安装提示"
 
 echo "中文安装教程（建议收藏）：https://brew.idayer.com/"
 
-echo "也可以查阅，Mac下镜像飞速安装Homebrew教程 ：https://zhuanlan.zhihu.com/p/90508170"
+echo "Mac下镜像飞速安装Homebrew教程（备用） ：https://zhuanlan.zhihu.com/p/90508170"
 
 echo "如果你想换源，可以使用镜像助手：https://brew.idayer.com/guide/change-source/"
 
@@ -981,7 +990,7 @@ ohai "Downloading and installing Homebrew..."
       execute "${MKDIR[@]}" "${HOMEBREW_CORE}"
       cd "${HOMEBREW_CORE}" >/dev/null || return
 
-      execute "git" "init" "-q"
+      execute "git" "-c" "init.defaultBranch=master" "init" "--quiet"
       execute "git" "config" "remote.origin.url" "${HOMEBREW_CORE_GIT_REMOTE}"
       execute "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
       execute "git" "config" "--bool" "core.autocrlf" "false"
@@ -1003,7 +1012,7 @@ ohai "Downloading and installing Homebrew..."
       execute "${MKDIR[@]}" "${HOMEBREW_CASK}"
       cd "${HOMEBREW_CASK}" >/dev/null || return
 
-      execute "git" "init" "-q"
+      execute "git" "-c" "init.defaultBranch=master" "init" "--quiet"
       execute "git" "config" "remote.origin.url" "${HOMEBREW_CASK_GIT_REMOTE}"
       execute "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
       execute "git" "config" "--bool" "core.autocrlf" "false"
@@ -1016,16 +1025,16 @@ ohai "Downloading and installing Homebrew..."
     ) || exit 1
   fi
 
-  if [[ -n "${HOMEBREW_NO_INSTALL_FROM_API-}" && ! -d "${HOMEBREW_SERVICES}" ]]
+  if [[ ! -d "${HOMEBREW_SERVICES}" ]]
     then
       # Always use single-quoted strings with `exp` expressions
       # shellcheck disable=SC2016
-      ohai 'Tapping homebrew/services because `$HOMEBREW_NO_INSTALL_FROM_API` is set.'
+      ohai 'Tapping homebrew/services'
       (
         execute "${MKDIR[@]}" "${HOMEBREW_SERVICES}"
         cd "${HOMEBREW_SERVICES}" >/dev/null || return
 
-        execute "git" "init" "-q"
+      execute "git" "-c" "init.defaultBranch=master" "init" "--quiet"
         execute "git" "config" "remote.origin.url" "${HOMEBREW_SERVICES_DEFAULT_GIT_REMOTE}"
         execute "git" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
         execute "git" "config" "--bool" "core.autocrlf" "false"
@@ -1047,23 +1056,12 @@ then
   warn "${HOMEBREW_PREFIX}/bin is not in your PATH."
 fi
 
-ohai "Installation successful!"
+ohai "🎉 恭喜，安装成功！"
 echo
 
 ring_bell
 
-# Use an extra newline and bold to avoid this being missed.
-ohai "Homebrew has enabled anonymous aggregate formulae and cask analytics."
-echo "$(
-  cat <<EOS
-${tty_bold}Read the analytics documentation (and how to opt-out) here:
-  ${tty_underline}https://docs.brew.sh/Analytics${tty_reset}
-No analytics data has been sent yet (nor will any be during this ${tty_bold}install${tty_reset} run).
-EOS
-)
-"
-
-ohai "Homebrew is run entirely by unpaid volunteers. Please consider donating:"
+ohai "Homebrew是由志愿者义务维护的，如果可以请考虑捐赠："
 echo "$(
   cat <<EOS
   ${tty_underline}https://github.com/Homebrew/brew#donations${tty_reset}
@@ -1095,30 +1093,45 @@ case "${SHELL}" in
     ;;
 esac
 
+# clean existed env
+if [[ -e "${shell_profile}" ]]; then
+  if [[ -z "${HOMEBREW_ON_LINUX-}" ]]; then
+    #Mac
+    sed -i "" "/brew\.idayer\.com/d" ${shell_profile}
+  else
+    #Linux
+    sed -i "/brew\.idayer\.com/d" ${shell_profile}
+  fi
+fi
+
+
+echo "自动配置环境变量"
+
 # `which` is a shell function defined above.
 # shellcheck disable=SC2230
 if [[ "$(which brew)" != "${HOMEBREW_PREFIX}/bin/brew" ]]
 then
-  warn "！！！！！！！！！！！ 重要  ！！！！！！！！！！！！！！！"
-  echo "切记在终端执行环境变量设置！，如已执行过请忽略。"
-  cat <<EOS
-- 执行下面命令将 Homebrew 到 ${tty_bold}PATH${tty_reset} 中:
-    echo 'eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"' >> ${shell_profile}
-    eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
+  cat >> ${shell_profile} <<EOS
+eval \$(${HOMEBREW_PREFIX}/bin/brew shellenv) #brew.idayer.com
+export HOMEBREW_API_DOMAIN=${HOMEBREW_API_DEFAULT_DOMAIN} #brew.idayer.com
+export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles #brew.idayer.com
 EOS
-  echo "  如有疑问，可以访问 ${tty_underline}https://brew.idayer.com/guide/m1/${tty_reset}"
+else
+  cat >> ${shell_profile} <<EOS
+export HOMEBREW_API_DOMAIN=${HOMEBREW_API_DEFAULT_DOMAIN} #brew.idayer.com
+export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles #brew.idayer.com
+EOS
 fi
-if [[ -n "${non_default_repos}" ]]
-then
-  plural=""
-  if [[ "${#additional_shellenv_commands[@]}" -gt 1 ]]
-  then
-    plural="s"
-  fi
-  printf -- "- Run these commands in your terminal to add the non-default Git remote%s for %s:\n" "${plural}" "${non_default_repos}"
-  printf "    echo '# Set PATH, MANPATH, etc., for Homebrew.' >> %s\n" "${shell_profile}"
-  printf "    echo '%s' >> ${shell_profile}\n" "${additional_shellenv_commands[@]}"
-  printf "    %s\n" "${additional_shellenv_commands[@]}"
+
+checkExecute
+source "${shell_profile}"
+if [ $? -ne 0 ];then
+  echo "$(
+    cat <<EOS
+${tty_red}${shell_profile} 文件存在错误，请仔细查看提示进行修改${tty_reset}
+EOS
+  )
+"
 fi
 
 if [[ -n "${HOMEBREW_ON_LINUX-}" ]]
@@ -1147,10 +1160,21 @@ then
 EOS
 fi
 
-cat <<EOS
-- 🎉 恭喜，安装成功！运行  ${tty_bold}brew help${tty_reset} 开始体验吧
-- 更多文档:
-    ${tty_underline}https://brew.idayer.com${tty_reset}
-    ${tty_underline}https://docs.brew.sh${tty_reset}
+echo ""
 
+cat <<EOS
+- 运行 ${tty_bold}brew help${tty_reset} 开始体验吧
+- 教程文档:
+    ${tty_underline}https://brew.idayer.com${tty_reset}
 EOS
+
+echo ""
+
+ohai "维护加速脚本以及解答问题是很费时费力的工作，如果有幸帮助到你，可以考虑请我喝杯咖啡，或者帮我点个赞。"
+echo "$(
+  cat <<EOS
+  ☕ ${tty_underline}https://brew.idayer.com/reward/${tty_reset}
+  🌟${tty_underline}https://github.com/ineo6/homebrew-install${tty_reset}
+EOS
+)
+"
