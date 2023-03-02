@@ -4,14 +4,12 @@ order: 4
 
 # FAQ
 
-## 解决 https://formulae.brew.sh/api/formula.json 失败问题
+## 解决 formulae.brew.sh/api/xxx.json 失败问题
 
-临时设置可以直接在终端执行`export HOMEBREW_NO_INSTALL_FROM_API=1`
-
-下面是设置永久效果，`zprofile`可以自行替换为`zshrc`。
+执行下面内容后，重新执行安装脚本：
 
 ```shell
-echo 'export HOMEBREW_NO_INSTALL_FROM_API=1' >> ~/.zprofile
+echo 'export HOMEBREW_API_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles/api #brew.idayer.com' >> ~/.zprofile
 source ~/.zprofile
 ```
 
@@ -38,18 +36,21 @@ git config --global --unset http.proxy
 git config --global --unset https.proxy
 ```
 
-## No.1 的小秘籍
+## 如何删除 Homebrew
 
 遇到解决不了的问题，先删除`homebrew`目录再重新运行脚本安装。
 
 删除可以通过脚本或者在文件夹中删除(mac)：
 
 ```shell
-// 目录替换为真实的brew位置
-sudo rm -rf 目录
+// m1,m2
+sudo rm -rf /opt/homebrew
+
+// intel
+sudo rm -rf /usr/local/Homebrew
 ```
 
-使用`rm -rf`命令是比较危险的行为，请一定要具体指定的、合适的目录。
+使用`rm -rf`命令是比较危险的行为，请不要随意修改最后的目录名。
 
 ### macOS
 
@@ -61,6 +62,22 @@ sudo rm -rf 目录
 ### Linux
 
 安装目录在`/home/linuxbrew`。
+
+## 手动设置 homebrew-core
+
+```shell
+cd "$(brew --repo)/Library/Taps/"
+mkdir homebrew && cd homebrew
+git clone https://mirrors.ustc.edu.cn/homebrew-core.git
+```
+
+## 手动设置 homebrew-core
+
+```shell
+cd "$(brew --repo)/Library/Taps/"
+cd homebrew
+git clone https://mirrors.ustc.edu.cn/homebrew-cask.git
+```
 
 ## 安装时 formulae 找不到
 
@@ -187,7 +204,7 @@ Use '--' to separate paths from revisions, like this:
 zsh
 
 ```shell
-echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)" #brew.idayer.com' >> ~/.zprofile
 eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 
@@ -203,14 +220,14 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 zsh
 
 ```shell
-echo 'eval "$(/usr/local/Homebrew/bin/brew shellenv)"' >> ~/.zprofile
+echo 'eval "$(/usr/local/Homebrew/bin/brew shellenv)" #brew.idayer.com' >> ~/.zprofile
 eval "$(/usr/local/Homebrew/bin/brew shellenv)"
 ```
 
 bash
 
 ```shell
-echo 'eval "$(/usr/local/Homebrew/bin/brew shellenv)"' >> ~/.bash_profile
+echo 'eval "$(/usr/local/Homebrew/bin/brew shellenv)" brew.idayer.com' >> ~/.bash_profile
 eval "$(/usr/local/Homebrew/bin/brew shellenv)"
 ```
 

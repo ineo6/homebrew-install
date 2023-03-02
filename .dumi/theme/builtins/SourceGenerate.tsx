@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Select, Tooltip } from 'antd';
+import { Select, Tooltip, Checkbox } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 // @ts-ignore
 import SourceCode from 'dumi-theme-default/src/builtins/SourceCode';
@@ -47,6 +47,7 @@ const SourceGenerate = ({ first }) => {
   const [mirror, setMirror] = useState<Mirror>(Mirror.USTC);
   const [platform, setPlatform] = useState<Platform>(Platform.MacOS);
   const [terminalType, setTerminalType] = useState<string>('zsh');
+  const [isJsonApi, setJsonApi] = useState<boolean>(true);
 
   function generateMirror() {
     const matchMirror = mirrorData[`${mirror}Mirror`] || {};
@@ -95,7 +96,7 @@ const SourceGenerate = ({ first }) => {
   function generateFirstMirrorSet() {
     const matchMirror = mirrorData[`${mirror}Mirror`] || {};
 
-    const shellArray = ['# 1.执行安装脚本'];
+    const shellArray = [];
 
     shellArray.push(`export HOMEBREW_BREW_GIT_REMOTE="${matchMirror.brew}"`);
 
@@ -107,27 +108,19 @@ const SourceGenerate = ({ first }) => {
       shellArray.push(`export HOMEBREW_CORE_GIT_REMOTE="${matchMirror.core}"`);
     }
 
+    if (isJsonApi) {
+      shellArray.push(`export HOMEBREW_API_DOMAIN="${matchMirror.jsonApi}"`);
+    } else {
+      shellArray.push(`export HOMEBREW_CASK_GIT_REMOTE="${matchMirror.cask}"`);
+    }
+
+    shellArray.push(`export HOMEBREW_BOTTLE_DOMAIN="${matchMirror.bottles}"`);
+
+    shellArray.push('');
+
     shellArray.push(
       '/bin/bash -c "$(curl -fsSL https://gitee.com/ineo6/homebrew-install/raw/master/install.sh)"',
     );
-
-    shellArray.push('');
-    shellArray.push('# 2.安装完成后设置');
-
-    const file = terminalType === 'zsh' ? '.zprofile' : '.bash_profile';
-
-    if (platform === Platform.Linux && matchMirror.linuxBottles) {
-      shellArray.push(
-        `echo 'export HOMEBREW_BOTTLE_DOMAIN=${matchMirror.linuxBottles}' >> ~/${file}`,
-      );
-    } else {
-      shellArray.push(
-        `echo 'export HOMEBREW_BOTTLE_DOMAIN=${matchMirror.bottles}' >> ~/${file}`,
-      );
-    }
-
-    shellArray.push(`source ~/${file}`);
-
     return shellArray.join('\n');
   }
 
@@ -190,6 +183,13 @@ const SourceGenerate = ({ first }) => {
           >
             <QuestionCircleOutlined style={{ marginLeft: '8px' }} />
           </Tooltip>
+        </div>
+        <div className="__dumi-default-source-generate-tool-query">
+          <label>JSON Api：</label>
+          <Checkbox
+            checked={isJsonApi}
+            onChange={e => setJsonApi(e.target.checked)}
+          ></Checkbox>
         </div>
       </div>
       <SourceCode

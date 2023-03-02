@@ -5,6 +5,7 @@ export const tencentMirror = {
   cask: 'https://mirrors.cloud.tencent.com/homebrew/homebrew-cask.git',
   bottles: 'https://mirrors.cloud.tencent.com/homebrew-bottles/bottles',
   linuxBottles: '',
+  jsonApi: 'https://mirrors.cloud.tencent.com/homebrew-bottles/api/',
 };
 
 export const tsinghuaMirror = {
@@ -16,6 +17,7 @@ export const tsinghuaMirror = {
   bottles: 'https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/bottles',
   linuxBottles:
     'https://mirrors.tuna.tsinghua.edu.cn/linuxbrew-bottles/bottles',
+  jsonApi: 'https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api',
 };
 
 export const ustcMirror = {
@@ -25,6 +27,7 @@ export const ustcMirror = {
   cask: 'https://mirrors.ustc.edu.cn/homebrew-cask.git',
   bottles: 'https://mirrors.ustc.edu.cn/homebrew-bottles/bottles',
   linuxBottles: 'https://mirrors.ustc.edu.cn/linuxbrew-bottles/bottles',
+  jsonApi: 'https://mirrors.ustc.edu.cn/homebrew-bottles/api',
 };
 
 export const bfsuMirror = {
@@ -34,6 +37,7 @@ export const bfsuMirror = {
   cask: 'https://mirrors.bfsu.edu.cn/git/homebrew/homebrew-cask.git',
   bottles: 'https://mirrors.bfsu.edu.cn/homebrew-bottles/bottles',
   linuxBottles: 'https://mirrors.bfsu.edu.cn/linuxbrew-bottles/bottles',
+  jsonApi: 'https://mirrors.bfsu.edu.cn/homebrew-bottles/api',
 };
 
 export const mirrorData: { [key: string]: any } = {

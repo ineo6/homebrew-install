@@ -10,7 +10,7 @@
 
 - 方案名：GitHub（可以自行命名）
 - 类型：远程
-- URL 地址：https://gitee.com/ineo6/hosts/raw/master/hosts <CopyButton content='https://gitee.com/ineo6/hosts/raw/master/hosts' />
+- URL 地址：https://gitlab.com/ineo6/hosts/-/raw/master/hosts <CopyButton content='https://gitlab.com/ineo6/hosts/-/raw/master/hosts' />
 - 自动更新：1 小时
 
 这样就可以和仓库中最新的`hosts`保持同步。
