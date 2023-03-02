@@ -188,11 +188,14 @@ HOMEBREW_CASK_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-cask.git"
 HOMEBREW_SERVICES_DEFAULT_GIT_REMOTE="https://gitlab.com/mirrorx/homebrew-services.git"
 
 HOMEBREW_API_DEFAULT_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+HOMEBREW_BOTTLE_DEFAULT_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/bottles"
 
 # Use remote URLs of Homebrew repositories from environment if set.
 HOMEBREW_BREW_GIT_REMOTE="${HOMEBREW_BREW_GIT_REMOTE:-"${HOMEBREW_BREW_DEFAULT_GIT_REMOTE}"}"
 HOMEBREW_CORE_GIT_REMOTE="${HOMEBREW_CORE_GIT_REMOTE:-"${HOMEBREW_CORE_DEFAULT_GIT_REMOTE}"}"
 HOMEBREW_CASK_GIT_REMOTE="${HOMEBREW_CASK_GIT_REMOTE:-"${HOMEBREW_CASK_DEFAULT_GIT_REMOTE}"}"
+HOMEBREW_API_DOMAIN="${HOMEBREW_API_DOMAIN:-"${HOMEBREW_API_DEFAULT_DOMAIN}"}"
+HOMEBREW_BOTTLE_DOMAIN="${HOMEBREW_BOTTLE_DOMAIN:-"${HOMEBREW_BOTTLE_DEFAULT_DOMAIN}"}"
 # The URLs with and without the '.git' suffix are the same Git remote. Do not prompt.
 if [[ "${HOMEBREW_BREW_GIT_REMOTE}" == "${HOMEBREW_BREW_DEFAULT_GIT_REMOTE}.git" ]]
 then
@@ -207,7 +210,7 @@ then
   HOMEBREW_CASK_GIT_REMOTE="${HOMEBREW_CASK_DEFAULT_GIT_REMOTE}"
 fi
 export HOMEBREW_{BREW,CORE}_GIT_REMOTE
-export HOMEBREW_API_DEFAULT_DOMAIN
+export HOMEBREW_API_DOMAIN
 
 # TODO: bump version when new macOS is released or announced
 MACOS_NEWEST_UNSUPPORTED="14.0"
@@ -630,11 +633,7 @@ EOABORT
 
     echo "$(
       cat <<EOS
-This installation may not succeed.
-After installation, you will encounter build failures with some formulae.
-Please create pull requests instead of asking for help on Homebrew\'s GitHub,
-Twitter or any other official channels. You are responsible for resolving any
-issues you experience while you are running this ${what}.
+系统版本太旧，可能会遇到一些未知问题
 EOS
     )
 " | tr -d "\\"
@@ -1113,13 +1112,13 @@ if [[ "$(which brew)" != "${HOMEBREW_PREFIX}/bin/brew" ]]
 then
   cat >> ${shell_profile} <<EOS
 eval \$(${HOMEBREW_PREFIX}/bin/brew shellenv) #brew.idayer.com
-export HOMEBREW_API_DOMAIN=${HOMEBREW_API_DEFAULT_DOMAIN} #brew.idayer.com
-export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles #brew.idayer.com
+export HOMEBREW_API_DOMAIN=${HOMEBREW_API_DOMAIN} #brew.idayer.com
+export HOMEBREW_BOTTLE_DOMAIN=${HOMEBREW_BOTTLE_DOMAIN} #brew.idayer.com
 EOS
 else
   cat >> ${shell_profile} <<EOS
-export HOMEBREW_API_DOMAIN=${HOMEBREW_API_DEFAULT_DOMAIN} #brew.idayer.com
-export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles #brew.idayer.com
+export HOMEBREW_API_DOMAIN=${HOMEBREW_API_DOMAIN} #brew.idayer.com
+export HOMEBREW_BOTTLE_DOMAIN=${HOMEBREW_BOTTLE_DOMAIN} #brew.idayer.com
 EOS
 fi
 
