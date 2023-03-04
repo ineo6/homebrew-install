@@ -185,7 +185,7 @@ HOMEBREW_BREW_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
 HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
 
 HOMEBREW_CASK_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-cask.git"
-HOMEBREW_SERVICES_DEFAULT_GIT_REMOTE="https://gitlab.com/mirrorx/homebrew-services.git"
+HOMEBREW_SERVICES_DEFAULT_GIT_REMOTE="https://gitee.com/imirror/homebrew-services.git"
 
 HOMEBREW_API_DEFAULT_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 HOMEBREW_BOTTLE_DEFAULT_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/bottles"
@@ -1048,13 +1048,6 @@ ohai "Downloading and installing Homebrew..."
   execute "${HOMEBREW_PREFIX}/bin/brew" "update" "--force" "--quiet"
 ) || exit 1
 
-if [[ ":${PATH}:" != *":${HOMEBREW_PREFIX}/bin:"* ]]
-then
-  warn "！！！！！！！！！！！ 重要  ！！！！！！！！！！！！！！！"
-  warn "看到此提示，一定要执行 Next steps 中的 环境变量设置！！！"
-  warn "${HOMEBREW_PREFIX}/bin is not in your PATH."
-fi
-
 ohai "🎉 恭喜，安装成功！"
 echo
 
@@ -1174,6 +1167,7 @@ echo "$(
   cat <<EOS
   ☕ ${tty_underline}https://brew.idayer.com/reward/${tty_reset}
   🌟${tty_underline}https://github.com/ineo6/homebrew-install${tty_reset}
+  🌟${tty_underline}https://gitee.com/ineo6/homebrew-install${tty_reset}
 EOS
 )
 "
