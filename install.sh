@@ -1127,16 +1127,18 @@ EOS
 "
 fi
 
-if [[ ":${PATH}:" != *":${HOMEBREW_PREFIX}/bin:"* ]]
+if [[ "$(which brew)" != "${HOMEBREW_PREFIX}/bin/brew" ]]
 then
-  eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
-
   echo ""
-  warn "！！！！！！！！！！！ 重要  ！！！！！！！！！！！！！！！"
-  cat <<EOS
-  如果遇到 command not found brew，请执行下面脚本完成安装:
-    eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
+  warn "重要信息 for Apple M1/M2系列用户"
+
+  warn "$(
+    cat <<EOS
+如果遇到 ${tty_red}command not found brew${tty_reset}，请执行下面脚本完成安装:
+  ${tty_blue}eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
 EOS
+  )
+"
 fi
 
 if [[ -n "${HOMEBREW_ON_LINUX-}" ]]
