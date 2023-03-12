@@ -1127,14 +1127,14 @@ EOS
 "
 fi
 
-if [[ "$(which brew)" != "${HOMEBREW_PREFIX}/bin/brew" ]]
+if ! [[ -x "$(command -v brew)" ]]
 then
   echo ""
-  warn "重要信息 for Apple M1/M2系列用户"
+  warn "重要信息"
 
   warn "$(
     cat <<EOS
-如果遇到 ${tty_red}command not found brew${tty_reset}，请执行下面脚本完成安装:
+如果遇到 ${tty_red}command not found brew${tty_reset}，请执行下面脚本完成安装或者直接重新打开终端:
   ${tty_blue}eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
 EOS
   )
