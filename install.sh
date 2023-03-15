@@ -1127,19 +1127,13 @@ EOS
 "
 fi
 
-if ! [[ -x "$(command -v brew)" ]]
-then
-  echo ""
-  warn "重要信息"
+echo ""
+warn "重要信息"
 
-  warn "$(
-    cat <<EOS
+cat <<EOS
 如果遇到 ${tty_red}command not found brew${tty_reset}，请执行下面脚本完成安装或者直接重新打开终端:
-  ${tty_blue}eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
+${tty_blue}eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
 EOS
-  )
-"
-fi
 
 if [[ -n "${HOMEBREW_ON_LINUX-}" ]]
 then
@@ -1178,11 +1172,9 @@ EOS
 echo ""
 
 ohai "维护加速脚本以及解答问题是很费时费力的工作，如果有幸帮助到你，可以考虑请我喝杯咖啡，或者帮我点个赞。"
-echo "$(
-  cat <<EOS
+
+cat <<EOS
   ☕${tty_underline}https://brew.idayer.com/reward/${tty_reset}
   🌟${tty_underline}https://github.com/ineo6/homebrew-install${tty_reset}
   🌟${tty_underline}https://gitee.com/ineo6/homebrew-install${tty_reset}
 EOS
-)
-"
