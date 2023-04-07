@@ -15,11 +15,11 @@ source ~/.zprofile
 
 ## 终端设置代理
 
-注意下面的`1088`端口，需要从代理软件中找到`http`端口并替换。
+在你的代理软件中找到`http`端口对应的值，替换下面设置脚本中的`1080`，然后在终端里执行。
 
 ```shell
 // 给终端设置代理
-export http_proxy=127.0.0.1:1088;export https_proxy=$http_proxy;export all_proxy=$http_proxy
+export http_proxy=http://127.0.0.1:1088;export https_proxy=$http_proxy;export all_proxy=$http_proxy
 
 // 取消代理设置
 unset http_proxy;unset https_proxy;unset all_proxy
