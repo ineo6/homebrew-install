@@ -211,6 +211,7 @@ then
 fi
 export HOMEBREW_{BREW,CORE}_GIT_REMOTE
 export HOMEBREW_API_DOMAIN
+export HOMEBREW_BOTTLE_DOMAIN
 
 # TODO: bump version when new macOS is released or announced
 MACOS_NEWEST_UNSUPPORTED="14.0"
@@ -1140,7 +1141,7 @@ EOS
 fi
 
 echo ""
-warn "重要信息"
+warn "重要信息!!!"
 
 cat <<EOS
 如果遇到 ${tty_red}command not found brew${tty_reset}，请执行下面脚本完成安装或者直接重新打开终端:
@@ -1183,10 +1184,13 @@ EOS
 
 echo ""
 
-ohai "维护加速脚本以及解答问题是很费时费力的工作，如果有幸帮助到你，可以考虑请我喝杯咖啡，或者帮我点个赞。"
+ohai "维护加速脚本以及解答问题是很费时费力的工作，如果有幸帮助到你，可以考虑请我喝杯咖啡，或者给项目点个赞。"
 
 cat <<EOS
-  ☕${tty_underline}https://brew.idayer.com/reward/${tty_reset}
-  🌟${tty_underline}https://github.com/ineo6/homebrew-install${tty_reset}
-  🌟${tty_underline}https://gitee.com/ineo6/homebrew-install${tty_reset}
+  ☕ 喝咖啡：${tty_underline}https://brew.idayer.com/reward/${tty_reset}
+EOS
+
+cat <<EOS
+  🌟 点赞：${tty_underline}https://github.com/ineo6/homebrew-install${tty_reset}
+  🌟 点赞：${tty_underline}https://gitee.com/ineo6/homebrew-install${tty_reset}
 EOS
