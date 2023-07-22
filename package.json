@@ -36,7 +36,7 @@
     "babel-plugin-import": "^1.13.3",
     "chalk": "^4.1.0",
     "download-git-repo": "^3.0.2",
-    "dumi": "^1.0.12",
+    "dumi": "^1.1.50",
     "fs-extra": "^9.0.1",
     "lint-staged": "^10.0.7",
     "ora": "^5.3.0",
@@ -46,7 +46,6 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.5.0",
-    "antd": "^4.13.1",
-    "valine": "^1.4.14"
+    "antd": "^4.13.1"
   }
 }
