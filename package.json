@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/ineo6/homebrew-install#readme",
   "devDependencies": {
+    "@umijs/plugin-helmet": "^1.1.4",
     "babel-plugin-import": "^1.13.3",
     "chalk": "^4.1.0",
     "download-git-repo": "^3.0.2",
@@ -47,5 +48,11 @@
   "dependencies": {
     "@ant-design/icons": "^4.5.0",
     "antd": "^4.13.1"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@umijs/preset-dumi@1.1.50": "patches/@umijs__preset-dumi@1.1.50.patch",
+      "@umijs/plugin-analytics@0.2.3": "patches/@umijs__plugin-analytics@0.2.3.patch"
+    }
   }
 }

@@ -1,0 +1,13 @@
+diff --git a/lib/index.js b/lib/index.js
+index c17f3109cb5dcf21cf28334b738ef145aa681f57..6ca897fbb91a88024f5b41fc580173e332a573ee 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -81,7 +81,7 @@ var _default = api => {
+         gtagScript.async = true;
+         gtagScript.src = "https://www.googletagmanager.com/gtag/js?id=${code}";
+         var scr = document.getElementsByTagName("script")[0];
+-        s.parentNode.insertBefore(gtagScript, scr);
++        scr.parentNode.insertBefore(gtagScript, scr);
+         window.dataLayer = window.dataLayer || [];
+         function gtag() {dataLayer.push(arguments);}
+         gtag('js', new Date());

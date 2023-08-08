@@ -1,0 +1,116 @@
+diff --git a/lib/transformer/remark/index.d.ts b/lib/transformer/remark/index.d.ts
+index 429efd0c8f4fe1b69875724a540be60fa14f9fa8..570e1aa79b65c2145bba83b2ef9eebcc59410ef9 100644
+--- a/lib/transformer/remark/index.d.ts
++++ b/lib/transformer/remark/index.d.ts
+@@ -17,6 +17,7 @@ interface IDumiVFileData {
+      * page title
+      */
+     title?: string;
++    description?: string;
+     /**
+      * component keywords
+      */
+diff --git a/lib/transformer/remark/index.js b/lib/transformer/remark/index.js
+index 2087f3a0d1761caf5c6c264ac76ca28d0dbf4df5..dfb517b5babb098b7f9ad817a647f4abdbcfc43e 100644
+--- a/lib/transformer/remark/index.js
++++ b/lib/transformer/remark/index.js
+@@ -91,6 +91,7 @@ var _jsxify = _interopRequireDefault(require("./jsxify"));
+ var _isolation = _interopRequireDefault(require("./isolation"));
+ var _domWarn = _interopRequireDefault(require("./domWarn"));
+ var _sourceCode = _interopRequireDefault(require("./sourceCode"));
++var _rehypeDesc = _interopRequireDefault(require("./rehypeDesc"));
+ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+ const log = (0, _utils().createDebug)('dumi:remark');
+ function debug(name) {
+@@ -120,7 +121,7 @@ var _default = (source, fileAbsPath, type, masterKey) => {
+   // rehype plugins
+   .use(_rehypeMathjax().default).use(debug('mathjax')).use(_sourceCode.default).use(debug('sourceCode')).use(_raw.default).use(debug('raw')).use(_domWarn.default).use(debug('domWarn')).use(_rehypeRemoveComments().default, {
+     removeConditional: true
+-  }).use(debug('comments')).use(_code.default).use(debug('code')).use(_api.default).use(debug('api')).use(_mdComponent.default).use(_slug.default).use(debug('slug')).use(_embed.default).use(debug('embed')).use(_rehypeAutolinkHeadings().default).use(debug('headings')).use(_link.default).use(debug('link')).use(_img.default).use(debug('img')).use(_table.default).use(debug('table')).use(_previewer.default).use(debug('previewer')).use(_isolation.default).use(debug('isolation')).data('masterKey', masterKey).data('fileAbsPath', fileAbsPath).data('outputType', type);
++  }).use(debug('comments')).use(_code.default).use(debug('code')).use(_api.default).use(debug('api')).use(_mdComponent.default).use(_slug.default).use(debug('slug')).use(_embed.default).use(debug('embed')).use(_rehypeAutolinkHeadings().default).use(debug('headings')).use(_link.default).use(debug('link')).use(_img.default).use(debug('img')).use(_table.default).use(debug('table')).use(_previewer.default).use(debug('previewer')).use(_isolation.default).use(debug('isolation')).use(_rehypeDesc.default).data('masterKey', masterKey).data('fileAbsPath', fileAbsPath).data('outputType', type);
+   // apply compiler via type
+   processor.use(rehypeCompiler[0], rehypeCompiler[1]);
+   const result = processor.processSync(source);
+diff --git a/lib/transformer/remark/meta.js b/lib/transformer/remark/meta.js
+index 53d2d66e42417bc108bda7c72da27744dbcdb373..b7006cf0e43e293740d664e9b303692bb8c2b65e 100644
+--- a/lib/transformer/remark/meta.js
++++ b/lib/transformer/remark/meta.js
+@@ -126,6 +126,7 @@ function meta() {
+         args: _objectSpread({
+           identifier: vFile.data.componentName,
+           name: vFile.data.title,
++          description: vFile.data.description,
+           keywords: vFile.data.keywords,
+           uuid: vFile.data.uuid,
+           // use to parse props from component file
+diff --git a/lib/transformer/remark/rehypeDesc.d.ts b/lib/transformer/remark/rehypeDesc.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..79a756f3101231b9ea35f0f0b5ee81ae6b146b11
+--- /dev/null
++++ b/lib/transformer/remark/rehypeDesc.d.ts
+@@ -0,0 +1,5 @@
++import type { IDumiUnifiedTransformer } from '.';
++/**
++ * rehype plugin to handle img source from local
++ */
++export default function rehypeDesc(): IDumiUnifiedTransformer;
+diff --git a/lib/transformer/remark/rehypeDesc.js b/lib/transformer/remark/rehypeDesc.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..94b5cfb4f40502ff4bd2d915bfba3669d930d874
+--- /dev/null
++++ b/lib/transformer/remark/rehypeDesc.js
+@@ -0,0 +1,54 @@
++"use strict";
++
++Object.defineProperty(exports, "__esModule", {
++  value: true
++});
++exports.default = rehypeDesc;
++function _path() {
++  const data = _interopRequireDefault(require("path"));
++  _path = function _path() {
++    return data;
++  };
++  return data;
++}
++function _unistUtilVisit() {
++  const data = _interopRequireDefault(require("unist-util-visit"));
++  _unistUtilVisit = function _unistUtilVisit() {
++    return data;
++  };
++  return data;
++}
++function _hastUtilToString() {
++  const data = _interopRequireDefault(require("hast-util-to-string"));
++  _hastUtilToString = function _hastUtilToString() {
++    return data;
++  };
++  return data;
++}
++function _hastUtilIsElement() {
++  const data = _interopRequireDefault(require("hast-util-is-element"));
++  _hastUtilIsElement = function _hastUtilIsElement() {
++    return data;
++  };
++  return data;
++}
++function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
++function isRelativeUrl(url) {
++  return typeof url === 'string' && !/^(?:(?:blob:)?\w+:)?\/\//.test(url) && !_path().default.isAbsolute(url);
++}
++/**
++ * rehype plugin to handle img source from local
++ */
++function rehypeDesc() {
++  return (ast, vFile) => {
++    (0, _unistUtilVisit().default)(ast, 'element', node => {
++      if ((0, _hastUtilIsElement().default)(node, 'p')) {
++        const text = (0, _hastUtilToString().default)(node).trim();
++        if (text) {
++          vFile.data.description = vFile.data.description || text.replace(/\r?\n|\r/g, '');
++          return _unistUtilVisit().default.EXIT;
++        }
++      }
++    });
++  };
++}
