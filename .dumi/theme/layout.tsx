@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { IRouteComponentProps } from '@umijs/types';
 import { context, Link } from 'dumi/theme';
 import Navbar from 'dumi-theme-default/src/components/Navbar';
@@ -6,7 +6,9 @@ import SideMenu from 'dumi-theme-default/src/components/SideMenu';
 import SlugList from 'dumi-theme-default/src/components/SlugList';
 import SearchBar from 'dumi-theme-default/src/components/SearchBar';
 import { Popover } from 'antd';
+import { Helmet } from 'dumi'
 import Notice from './Notice';
+import { useLocation } from 'react-router-dom'
 import './style/layout.less';
 
 const Hero = hero => (
@@ -71,10 +73,18 @@ const Features = features => (
 
 const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
   const {
-    config: { mode, repository },
+    config,
     meta,
     locale,
   } = useContext(context);
+
+  const { mode, repository, logo } = config
+
+  const { pathname } = useLocation();
+
+  // todo  临时方案
+  const hostname = 'https://brew.idayer.com'
+
   const { url: repoUrl, branch, platform } = repository;
   const [menuCollapsed, setMenuCollapsed] = useState<boolean>(true);
   const isSiteMode = mode === 'site';
@@ -94,8 +104,16 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
   });
   const repoPlatform =
     { github: 'GitHub', gitlab: 'GitLab' }[
-      (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
+    (repoUrl || '').match(/(github|gitlab)/)?.[1] || 'nothing'
     ] || platform;
+
+  if(!meta.img && logo) {
+    meta.img = logo
+  }
+
+  if(meta.img.indexOf('https://') === -1) {
+    meta.img = hostname + meta.img
+  }
 
   return (
     <div
@@ -110,6 +128,26 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
         setMenuCollapsed(true);
       }}
     >
+      <Helmet>
+        {meta.title && <title>{meta.title}</title>}
+        {meta.title && <meta property="og:title" content={meta.title} />}
+        {meta.description && <meta name="description" content={meta.description} />}
+        {meta.description && (
+          <meta property="og:description" content={meta.description} />
+        )}
+        {meta.keywords && (
+          <meta name="keywords" content={meta.keywords.join(',')} />
+        )}
+        {meta.keywords &&
+          meta.keywords.map((keyword) => (
+            <meta key={keyword} property="article:tag" content={keyword}></meta>
+          ))}
+        {/* <meta property="og:image" content="https://brew.idayer.com/images/homebrew-256x256.png"/> */}
+        {hostname && <link rel="canonical" href={hostname + pathname} />}
+        {meta.img && (
+          <meta property="og:image" content={meta.img} ></meta>
+        )}
+      </Helmet>
       <Navbar
         location={location}
         navPrefix={

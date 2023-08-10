@@ -1,43 +1,12 @@
 import { defineConfig } from 'dumi';
 
 export default defineConfig({
-  title: 'Homebrew',
+  title: 'Homebrew 中文网',
   mode: 'site',
   logo: '/images/homebrew-256x256.png',
   favicon: '/favicon.ico',
   locales: [['zh-CN', '中文']],
-  metas: [
-    {
-      name: 'keywords',
-      content: 'Mac,Homebrew,macOS',
-    },
-    {
-      name: 'description',
-      content:
-        'Homebrew是一款包管理工具，目前支持macOS和linux系统。主要有四个部分组成: brew、homebrew-core 、homebrew-cask、homebrew-bottles。本文主要介绍 Homebrew安装方式以及如何加速访问，顺便普及一些必要的知识。…',
-    },
-    {
-      property: 'og:title',
-      content: '镜像快速安装Homebrew教程',
-    },
-    {
-      property: 'og:url',
-      content: 'https://brew.idayer.com/',
-    },
-    {
-      property: 'og:description',
-      content:
-        'Homebrew是一款包管理工具，目前支持macOS和linux系统。主要有四个部分组成: brew、homebrew-core 、homebrew-cask、homebrew-bottles。本文主要介绍 Homebrew安装方式以及如何加速访问，顺便普及一些必要的知识。…',
-    },
-    {
-      property: 'og:image',
-      content: 'https://brew.idayer.com/images/homebrew-256x256.png',
-    },
-    {
-      property: 'og:site_name',
-      content: 'Homebrew安装教程 - 镜像',
-    },
-  ],
+  metas: [],
   navs: [
     null,
     { title: 'GitHub', path: 'https://github.com/ineo6/homebrew-install' },
@@ -66,6 +35,12 @@ export default defineConfig({
         path: '/guide/faq/',
       },
     ],
+    '/install': [
+      {
+        title: '快系列-你快了吗',
+        children: ['/install/stable-diffusion-webui', '/install/nvm-for-nodejs'],
+      }
+    ]
   },
   extraBabelPlugins: [
     [

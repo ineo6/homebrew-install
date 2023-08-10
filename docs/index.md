@@ -7,6 +7,10 @@ hero:
     - text: 快速开始
       link: /guide/start/
 footer: Open-source MIT Licensed | Copyright © 2023<br />Powered by [Neo](https://github.com/ineo6)
+
+keywords: [Mac,Homebrew,macOS]
+title: 快速安装Homebrew教程
+description: Homebrew是macOS上最强大的包管理工具，可以帮你安装众多软件，本站提供的一键安装脚本可以帮你快速安装Homebrew。
 ---
 
 <h1 style="display: none">镜像快速安装Homebrew教程</h1>
