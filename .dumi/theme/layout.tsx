@@ -78,7 +78,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     locale,
   } = useContext(context);
 
-  const { mode, repository, logo } = config
+  const { mode, repository, logo, title } = config
 
   const { pathname } = useLocation();
 
@@ -129,8 +129,8 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
       }}
     >
       <Helmet>
-        {meta.title && <title>{meta.title}</title>}
-        {meta.title && <meta property="og:title" content={meta.title} />}
+        {meta.title && <title>{meta.title + ' - ' + title}</title>}
+        {meta.title && <meta property="og:title" content={meta.title + ' - ' + title} />}
         {meta.description && <meta name="description" content={meta.description} />}
         {meta.description && (
           <meta property="og:description" content={meta.description} />
