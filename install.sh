@@ -73,6 +73,10 @@ ohai() {
   printf "${tty_blue}==>${tty_bold} %s${tty_reset}\n" "$(shell_join "$@")"
 }
 
+highlight() {
+  printf "${tty_green} %s${tty_reset}\n" "$(shell_join "$@")"
+}
+
 warn() {
   printf "${tty_red}Warning${tty_reset}: %s\n" "$(chomp "$1")" >&2
 }
@@ -744,17 +748,24 @@ fi
 
 ohai "安装提示"
 
-echo "中文安装教程（建议收藏）：https://brew.idayer.com/"
 
-echo "Mac下镜像飞速安装Homebrew教程（备用） ：https://zhuanlan.zhihu.com/p/90508170"
+echo "Mac下镜像飞速安装Homebrew教程（请收藏）：${tty_underline}https://brew.idayer.com/${tty_reset}"
 
-echo "如果你想换源，可以使用镜像助手：https://brew.idayer.com/guide/change-source/"
+echo "备用：${tty_underline}https://zhuanlan.zhihu.com/p/90508170${tty_reset}"
 
-echo
+echo ""
+highlight "欢迎使用[快系列]教程，必出精品，安装有保障！"
+
+cat <<EOS
+
+- ${tty_blue}[快系列]stable-diffusion-webui${tty_reset}: ${tty_underline}https://brew.idayer.com/install/stable-diffusion-webui${tty_reset}
+- ${tty_blue}[快系列]nvm快速安装教程${tty_reset}: ${tty_underline}https://brew.idayer.com/install/nvm-for-nodejs${tty_reset}
+
+EOS
 
 echo "安装遇到问题，可以通过讨论群寻求帮助。"
 
-echo "也欢迎加群讨论，扫码关注公众号（湖中剑），回复'brew'加入讨论群。"
+echo "也欢迎加群讨论，扫码关注公众号：${tty_blue}湖中剑${tty_reset}，回复'brew'加入讨论群。"
 
 echo "
 █████████████████████████████████████
@@ -1179,7 +1190,7 @@ EOS
 fi
 
 echo ""
-warn "重要信息!!!"
+echo "${tty_red}重要信息!!!${tty_reset}"
 
 cat <<EOS
 如果遇到 ${tty_red}command not found brew${tty_reset}，请执行下面脚本完成安装或者直接重新打开终端:
@@ -1222,15 +1233,23 @@ EOS
 
 echo ""
 
-ohai "维护加速脚本以及解答问题是很费时费力的工作，如果有幸帮助到你，可以考虑请我喝杯咖啡，或者给项目点个赞。"
+highlight "欢迎使用[快系列]教程，必出精品，安装有保障！"
+
+cat <<EOS
+
+- ${tty_blue}[快系列]stable-diffusion-webui${tty_reset}: ${tty_underline}https://brew.idayer.com/install/stable-diffusion-webui${tty_reset}
+- ${tty_blue}[快系列]nvm快速安装教程${tty_reset}: ${tty_underline}https://brew.idayer.com/install/nvm-for-nodejs${tty_reset}
+
+EOS
+
+echo ""
+
+ohai "如果有幸帮助到你，可以考虑请我喝杯咖啡~"
 
 cat <<EOS
   ☕ 喝咖啡：${tty_underline}https://brew.idayer.com/reward/${tty_reset}
 EOS
 
-cat <<EOS
-  🌟 点赞：${tty_underline}https://github.com/ineo6/homebrew-install${tty_reset}
-  🌟 点赞：${tty_underline}https://gitee.com/ineo6/homebrew-install${tty_reset}
-EOS
+echo ""
 
 report_install_to_ga4 'brew_install_finish'
