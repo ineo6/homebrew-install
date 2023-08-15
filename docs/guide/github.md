@@ -1,4 +1,21 @@
-# GitHub 加速教程
+# GitHub 加速方案
+
+
+## GitHub文件加速
+
+请访问 [https://gh.idayer.com](https://gh.idayer.com)
+
+GitHub 文件 , Releases , archive , gist , raw.githubusercontent.com 文件代理加速下载服务。
+
+支持以下资源：
+
+- Raw 文件：`https://raw.githubusercontent.com/ineo6/hosts/master/hosts`
+- 分支源码：`https://github.com/ineo6/hosts/archive/master.zip`
+- Releases 源码：`https://github.com/stilleshan/ServerStatus/archive/v1.0.tar.gz`
+- Releases 文件：`https://github.com/fatedier/frp/releases/download/v0.33.0/frp_0.33.0_linux_amd64.tar.gz`
+
+
+## Hosts加速
 
 [GitHub Hosts](https://github.com/ineo6/hosts) 仓库提供最新的`GitHub hosts`地址。
 
