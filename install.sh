@@ -39,6 +39,28 @@ then
   abort 'Bash must not run in POSIX mode. Please unset POSIXLY_CORRECT and try again.'
 fi
 
+usage() {
+  cat <<EOS
+Homebrew Installer
+Usage: [NONINTERACTIVE=1] [CI=1] install.sh [options]
+    -h, --help       显示帮助信息.
+    NONINTERACTIVE   安装时不需要用户确认输入
+    CI               CI模式安装
+EOS
+  exit "${1:-0}"
+}
+
+while [[ $# -gt 0 ]]
+do
+  case "$1" in
+    -h | --help) usage ;;
+    *)
+      warn "Unrecognized option: '$1'"
+      usage 1
+      ;;
+  esac
+done
+
 # string formatters
 if [[ -t 1 ]]
 then
@@ -73,12 +95,12 @@ ohai() {
   printf "${tty_blue}==>${tty_bold} %s${tty_reset}\n" "$(shell_join "$@")"
 }
 
-highlight() {
-  printf "${tty_green} %s${tty_reset}\n" "$(shell_join "$@")"
-}
-
 warn() {
   printf "${tty_red}Warning${tty_reset}: %s\n" "$(chomp "$1")" >&2
+}
+
+highlight() {
+  printf "${tty_green} %s${tty_reset}\n" "$(shell_join "$@")"
 }
 
 checkExecute() {
@@ -589,12 +611,20 @@ EOABORT
 
     echo "$(
       cat <<EOS
-系统版本太旧，可能会遇到一些未知问题
+因为系统版本，可能会遇到一些未知问题
 EOS
     )
 " | tr -d "\\"
   fi
 fi
+
+ohai "脚本会安装以下内容:"
+echo "${HOMEBREW_PREFIX}/bin/brew"
+echo "${HOMEBREW_PREFIX}/share/doc/homebrew"
+echo "${HOMEBREW_PREFIX}/share/man/man1/brew.1"
+echo "${HOMEBREW_PREFIX}/share/zsh/site-functions/_brew"
+echo "${HOMEBREW_PREFIX}/etc/bash_completion.d/brew"
+echo "${HOMEBREW_REPOSITORY}"
 
 # Keep relatively in sync with
 # https://github.com/Homebrew/brew/blob/master/Library/Homebrew/keg.rb
