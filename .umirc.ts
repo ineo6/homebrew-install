@@ -38,7 +38,7 @@ export default defineConfig({
     '/install': [
       {
         title: '快系列-你快了吗',
-        children: ['/install/stable-diffusion-webui', '/install/nvm-for-nodejs'],
+        children: ['/install/stable-diffusion-webui', '/install/nvm-for-nodejs', '/install/game-porting-toolkit'],
       }
     ]
   },
