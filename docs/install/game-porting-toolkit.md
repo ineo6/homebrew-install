@@ -96,10 +96,18 @@ brew -v install apple/apple/game-porting-toolkit
 
 下载好后双击`dmg`进行挂载。
 
-然后执行：
+- Game_porting_toolkit_1_beta_3以及之前版本请执行：
+
+请执行：
 
 ```shell
 ditto /Volumes/Game\ Porting\ Toolkit-1.0/lib/ `brew --prefix game-porting-toolkit`/lib/
+```
+
+- Game_porting_toolkit_1_beta_4版本请执行：
+
+```shell
+ditto /Volumes/Game\ Porting\ Toolkit-1.0/redist/lib/ `brew --prefix game-porting-toolkit`/lib/
 ```
 
 继续执行：
@@ -220,4 +228,3 @@ MTL_HUD_ENABLED=1 WINEESYNC=1 WINEPREFIX=~/my-game-prefix /usr/local/Cellar/game
 #### 打开Steam后直接闪退
 
 移除扩展显示器，或者停止屏幕镜像。
-
