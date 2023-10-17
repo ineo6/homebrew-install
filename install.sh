@@ -211,7 +211,7 @@ HOMEBREW_BREW_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
 HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
 
 HOMEBREW_CASK_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-cask.git"
-HOMEBREW_SERVICES_DEFAULT_GIT_REMOTE="https://gitee.com/imirror/homebrew-services.git"
+HOMEBREW_SERVICES_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-services.git"
 
 HOMEBREW_API_DEFAULT_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 HOMEBREW_BOTTLE_DEFAULT_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/bottles"
@@ -1184,13 +1184,13 @@ case "${SHELL}" in
 esac
 
 # clean existed env
-if [[ -e "${shell_profile}" ]]; then
+if [[ -e "${shell_rcfile}" ]]; then
   if [[ -z "${HOMEBREW_ON_LINUX-}" ]]; then
     #Mac
-    sed -i "" "/brew\.idayer\.com/d" ${shell_profile}
+    sed -i "" "/brew\.idayer\.com/d" ${shell_rcfile}
   else
     #Linux
-    sed -i "/brew\.idayer\.com/d" ${shell_profile}
+    sed -i "/brew\.idayer\.com/d" ${shell_rcfile}
   fi
 fi
 
@@ -1201,24 +1201,24 @@ echo "自动配置环境变量"
 # shellcheck disable=SC2230
 if [[ "$(which brew)" != "${HOMEBREW_PREFIX}/bin/brew" ]]
 then
-  cat >> ${shell_profile} <<EOS
+  cat >> ${shell_rcfile} <<EOS
 eval \$(${HOMEBREW_PREFIX}/bin/brew shellenv) #brew.idayer.com
 export HOMEBREW_API_DOMAIN=${HOMEBREW_API_DOMAIN} #brew.idayer.com
 export HOMEBREW_BOTTLE_DOMAIN=${HOMEBREW_BOTTLE_DOMAIN} #brew.idayer.com
 EOS
 else
-  cat >> ${shell_profile} <<EOS
+  cat >> ${shell_rcfile} <<EOS
 export HOMEBREW_API_DOMAIN=${HOMEBREW_API_DOMAIN} #brew.idayer.com
 export HOMEBREW_BOTTLE_DOMAIN=${HOMEBREW_BOTTLE_DOMAIN} #brew.idayer.com
 EOS
 fi
 
 checkExecute
-source "${shell_profile}"
+source "${shell_rcfile}"
 if [ $? -ne 0 ];then
   echo "$(
     cat <<EOS
-${tty_red}${shell_profile} 文件存在错误，请仔细查看提示进行修改${tty_reset}
+${tty_red}${shell_rcfile} 文件存在错误，请仔细查看提示进行修改${tty_reset}
 EOS
   )
 "
