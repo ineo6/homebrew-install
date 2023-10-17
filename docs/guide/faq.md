@@ -13,6 +13,13 @@ echo 'export HOMEBREW_API_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles/ap
 source ~/.zprofile
 ```
 
+## 加速工具
+
+免责声明：列出以下内容仅仅是提供应急所需，不对服务的稳定性提供保证。
+
+- [一元机场](https://xn--4gq62f52gdss.com/#/register?code=a2ZU70bj)
+- [efc-cloud](https://invite.fastconnect.cc/#/register?code=ndwVZL5l)
+
 ## 终端设置代理
 
 在你的代理软件中找到`http`端口对应的值，替换下面设置脚本中的`1080`，然后在终端里执行。
@@ -243,6 +250,20 @@ To retry an incomplete download, remove the file above.
 ```
 
 遇到该问题时请尝试该方案：https://blog.csdn.net/lemostic/article/details/107101219
+
+## homebrew-bundle错误
+
+```shell
+fatal: unable to access 'https://github.com/homebrew/homebrew-bundle/': Recv failure: Operation timed out
+Error: Fetching /usr/local/Homebrew/Library/Taps/homebrew/homebrew-bundle failed!
+Failed during: /usr/local/bin/brew update --force --quiet
+```
+
+这个错误是因为`bundle`工具默认内置的`GitHub`资源，这很容易导致出现方式失败的情况，请直接执行以下命令：
+
+```shell
+git -C "$(brew --repo)/Library/Taps/homebrew/homebrew-bundle" remote set-url origin https://gitee.com/imirror/homebrew-bundle.git
+```
 
 ## 如何判断终端类型
 
