@@ -39,6 +39,28 @@ then
   abort 'Bash must not run in POSIX mode. Please unset POSIXLY_CORRECT and try again.'
 fi
 
+usage() {
+  cat <<EOS
+Homebrew Installer
+Usage: [NONINTERACTIVE=1] [CI=1] install.sh [options]
+    -h, --help       Display this message.
+    NONINTERACTIVE   Install without prompting for user input
+    CI               Install in CI mode (e.g. do not prompt for user input)
+EOS
+  exit "${1:-0}"
+}
+
+while [[ $# -gt 0 ]]
+do
+  case "$1" in
+    -h | --help) usage ;;
+    *)
+      warn "Unrecognized option: '$1'"
+      usage 1
+      ;;
+  esac
+done
+
 # string formatters
 if [[ -t 1 ]]
 then
@@ -181,9 +203,9 @@ fi
 export HOMEBREW_{BREW,CORE}_GIT_REMOTE
 
 # TODO: bump version when new macOS is released or announced
-MACOS_NEWEST_UNSUPPORTED="14.0"
+MACOS_NEWEST_UNSUPPORTED="15.0"
 # TODO: bump version when new macOS is released
-MACOS_OLDEST_SUPPORTED="11.0"
+MACOS_OLDEST_SUPPORTED="12.0"
 
 # For Homebrew on Linux
 REQUIRED_RUBY_VERSION=2.6    # https://github.com/Homebrew/brew/pull/6556
@@ -833,28 +855,28 @@ EOABORT
   )"
 fi
 
-USABLE_GIT="$(command -v git)"
-if [[ -z "${USABLE_GIT}" ]]
+USABLE_GIT=/usr/bin/git
+if [[ -n "${HOMEBREW_ON_LINUX-}" ]]
 then
-  abort "$(
-    cat <<EOABORT
-You must install Git before installing Homebrew. See:
-  ${tty_underline}https://docs.brew.sh/Installation${tty_reset}
-EOABORT
-  )"
-elif [[ -n "${HOMEBREW_ON_LINUX-}" ]]
-then
-  suitable_git="$(find_tool git)"
-  if [[ -z "${suitable_git}" ]]
+  USABLE_GIT="$(find_tool git)"
+  if [[ -z "$(command -v git)" ]]
   then
     abort "$(
       cat <<EOABORT
-The version of Git that was found does not satisfy requirements for Homebrew.
-Please install Git ${REQUIRED_GIT_VERSION} or newer and add it to your PATH.
+  You must install Git before installing Homebrew. See:
+    ${tty_underline}https://docs.brew.sh/Installation${tty_reset}
 EOABORT
     )"
   fi
-  USABLE_GIT="${suitable_git}"
+  if [[ -z "${USABLE_GIT}" ]]
+  then
+    abort "$(
+      cat <<EOABORT
+  The version of Git that was found does not satisfy requirements for Homebrew.
+  Please install Git ${REQUIRED_GIT_VERSION} or newer and add it to your PATH.
+EOABORT
+    )"
+  fi
   if [[ "${USABLE_GIT}" != /usr/bin/git ]]
   then
     export HOMEBREW_GIT_PATH="${USABLE_GIT}"
@@ -992,22 +1014,27 @@ EOS
 ohai "Next steps:"
 case "${SHELL}" in
   */bash*)
-    if [[ -r "${HOME}/.bash_profile" ]]
+    if [[ -n "${HOMEBREW_ON_LINUX-}" ]]
     then
-      shell_profile="${HOME}/.bash_profile"
+      shell_rcfile="${HOME}/.bashrc"
     else
-      shell_profile="${HOME}/.profile"
+      shell_rcfile="${HOME}/.bash_profile"
     fi
     ;;
   */zsh*)
-    shell_profile="${HOME}/.zprofile"
+    if [[ -n "${HOMEBREW_ON_LINUX-}" ]]
+    then
+      shell_rcfile="${ZDOTDIR:-"${HOME}"}/.zshrc"
+    else
+      shell_rcfile="${ZDOTDIR:-"${HOME}"}/.zprofile"
+    fi
     ;;
   *)
-    shell_profile="${HOME}/.profile"
+    shell_rcfile="${ENV:-"${HOME}/.profile"}"
     ;;
 esac
 
-if grep -qs "eval \"\$(${HOMEBREW_PREFIX}/bin/brew shellenv)\"" "${shell_profile}"
+if grep -qs "eval \"\$(${HOMEBREW_PREFIX}/bin/brew shellenv)\"" "${shell_rcfile}"
 then
   if ! [[ -x "$(command -v brew)" ]]
   then
@@ -1019,7 +1046,7 @@ EOS
 else
   cat <<EOS
 - Run these two commands in your terminal to add Homebrew to your ${tty_bold}PATH${tty_reset}:
-    (echo; echo 'eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"') >> ${shell_profile}
+    (echo; echo 'eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"') >> ${shell_rcfile}
     eval "\$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
 EOS
 fi
@@ -1032,8 +1059,8 @@ then
     plural="s"
   fi
   printf -- "- Run these commands in your terminal to add the non-default Git remote%s for %s:\n" "${plural}" "${non_default_repos}"
-  printf "    echo '# Set PATH, MANPATH, etc., for Homebrew.' >> %s\n" "${shell_profile}"
-  printf "    echo '%s' >> ${shell_profile}\n" "${additional_shellenv_commands[@]}"
+  printf "    echo '# Set PATH, MANPATH, etc., for Homebrew.' >> %s\n" "${shell_rcfile}"
+  printf "    echo '%s' >> ${shell_rcfile}\n" "${additional_shellenv_commands[@]}"
   printf "    %s\n" "${additional_shellenv_commands[@]}"
 fi
 

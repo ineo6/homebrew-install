@@ -240,9 +240,9 @@ export HOMEBREW_API_DOMAIN
 export HOMEBREW_BOTTLE_DOMAIN
 
 # TODO: bump version when new macOS is released or announced
-MACOS_NEWEST_UNSUPPORTED="14.0"
+MACOS_NEWEST_UNSUPPORTED="15.0"
 # TODO: bump version when new macOS is released
-MACOS_OLDEST_SUPPORTED="11.0"
+MACOS_OLDEST_SUPPORTED="12.0"
 
 # For Homebrew on Linux
 REQUIRED_RUBY_VERSION=2.6    # https://github.com/Homebrew/brew/pull/6556
@@ -1163,18 +1163,23 @@ EOS
 ohai "Next steps:"
 case "${SHELL}" in
   */bash*)
-    if [[ -r "${HOME}/.bash_profile" ]]
+    if [[ -n "${HOMEBREW_ON_LINUX-}" ]]
     then
-      shell_profile="${HOME}/.bash_profile"
+      shell_rcfile="${HOME}/.bashrc"
     else
-      shell_profile="${HOME}/.profile"
+      shell_rcfile="${HOME}/.bash_profile"
     fi
     ;;
   */zsh*)
-    shell_profile="${HOME}/.zprofile"
+    if [[ -n "${HOMEBREW_ON_LINUX-}" ]]
+    then
+      shell_rcfile="${ZDOTDIR:-"${HOME}"}/.zshrc"
+    else
+      shell_rcfile="${ZDOTDIR:-"${HOME}"}/.zprofile"
+    fi
     ;;
   *)
-    shell_profile="${HOME}/.profile"
+    shell_rcfile="${ENV:-"${HOME}/.profile"}"
     ;;
 esac
 
