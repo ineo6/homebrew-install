@@ -11,6 +11,7 @@ export default defineConfig({
     null,
     { title: 'GitHub', path: 'https://github.com/ineo6/homebrew-install' },
     { title: 'GitMaster', path: 'https://github.com/ineo6/git-master' },
+    { title: '我的博客', path: 'https://idayer.com' },
   ],
   menus: {
     '/guide': [
