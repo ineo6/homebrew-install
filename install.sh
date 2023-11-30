@@ -100,7 +100,7 @@ warn() {
 }
 
 highlight() {
-  printf "${tty_green} %s${tty_reset}\n" "$(shell_join "$@")"
+  printf "${tty_green}%s${tty_reset}\n" "$(shell_join "$@")"
 }
 
 checkExecute() {
@@ -618,13 +618,13 @@ EOS
   fi
 fi
 
-ohai "脚本会安装以下内容:"
-echo "${HOMEBREW_PREFIX}/bin/brew"
-echo "${HOMEBREW_PREFIX}/share/doc/homebrew"
-echo "${HOMEBREW_PREFIX}/share/man/man1/brew.1"
-echo "${HOMEBREW_PREFIX}/share/zsh/site-functions/_brew"
-echo "${HOMEBREW_PREFIX}/etc/bash_completion.d/brew"
-echo "${HOMEBREW_REPOSITORY}"
+# ohai "脚本会安装以下内容:"
+# echo "${HOMEBREW_PREFIX}/bin/brew"
+# echo "${HOMEBREW_PREFIX}/share/doc/homebrew"
+# echo "${HOMEBREW_PREFIX}/share/man/man1/brew.1"
+# echo "${HOMEBREW_PREFIX}/share/zsh/site-functions/_brew"
+# echo "${HOMEBREW_PREFIX}/etc/bash_completion.d/brew"
+# echo "${HOMEBREW_REPOSITORY}"
 
 # Keep relatively in sync with
 # https://github.com/Homebrew/brew/blob/master/Library/Homebrew/keg.rb
@@ -778,13 +778,12 @@ fi
 
 ohai "安装提示"
 
-
+echo ""
 echo "Mac下镜像飞速安装Homebrew教程（请收藏）：${tty_underline}https://brew.idayer.com/${tty_reset}"
 
-echo "备用：${tty_underline}https://zhuanlan.zhihu.com/p/90508170${tty_reset}"
-
 echo ""
-highlight "欢迎使用[快系列]教程，必出精品，安装有保障！"
+echo "打个小广告"
+echo "欢迎使用[快系列]教程，必出精品，安装有保障！"
 
 cat <<EOS
 
@@ -793,9 +792,10 @@ cat <<EOS
 
 EOS
 
-echo "安装遇到问题，可以通过讨论群寻求帮助。"
+highlight "安装遇到问题，请添加讨论群寻求Homebre的安装帮助。"
 
-echo "也欢迎加群讨论，扫码关注公众号：${tty_blue}湖中剑${tty_reset}，回复'brew'加入讨论群。"
+echo ""
+echo "当然也非常欢迎大家${tty_blue}加群${tty_reset}聊天${tty_bold}摸鱼，讨论mac、软件、摄影${tty_reset}，扫码关注公众号：${tty_blue}湖中剑${tty_reset}，回复'brew'加群。"
 
 echo "
 █████████████████████████████████████
@@ -1141,9 +1141,6 @@ ohai "Downloading and installing Homebrew..."
   execute "${HOMEBREW_PREFIX}/bin/brew" "update" "--force" "--quiet"
 ) || exit 1
 
-ohai "🎉 恭喜，安装成功！"
-echo
-
 ring_bell
 
 ohai "Homebrew是由志愿者义务维护的，如果可以请考虑捐赠："
@@ -1225,7 +1222,7 @@ EOS
 fi
 
 echo ""
-echo "${tty_red}重要信息!!!${tty_reset}"
+echo "${tty_red}重要信息!!!重要信息!!!重要信息!!!${tty_reset}"
 
 cat <<EOS
 如果遇到 ${tty_red}command not found brew${tty_reset}，请执行下面脚本完成安装或者直接重新打开终端:
@@ -1260,21 +1257,11 @@ fi
 
 echo ""
 
-cat <<EOS
-- 运行 ${tty_bold}brew help${tty_reset} 开始体验吧
-- 教程文档:
-    ${tty_underline}https://brew.idayer.com${tty_reset}
-EOS
-
-echo ""
-
-highlight "欢迎使用[快系列]教程，必出精品，安装有保障！"
+ohai "🎉 恭喜，安装成功！"
 
 cat <<EOS
-
-- ${tty_blue}[快系列]stable-diffusion-webui${tty_reset}: ${tty_underline}https://brew.idayer.com/install/stable-diffusion-webui${tty_reset}
-- ${tty_blue}[快系列]nvm快速安装教程${tty_reset}: ${tty_underline}https://brew.idayer.com/install/nvm-for-nodejs${tty_reset}
-
+- 安装成功后可以执行 ${tty_bold}brew help${tty_reset} 验证。
+- 教程文档: ${tty_underline}https://brew.idayer.com${tty_reset}
 EOS
 
 echo ""
