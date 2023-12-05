@@ -22,15 +22,26 @@ source ~/.zprofile
 
 ## 终端设置代理
 
-在你的代理软件中找到`http`端口对应的值，替换下面设置脚本中的`1080`，然后在终端里执行。
+在你的代理软件中找到`http`端口号，然后把下面脚本中的`1080`替换成你找到的端口号，然后在终端执行。
 
 ```shell
 // 给终端设置代理
-export http_proxy=http://127.0.0.1:1088;export https_proxy=$http_proxy;export all_proxy=$http_proxy
+export http_proxy=http://127.0.0.1:1080;export https_proxy=$http_proxy;export all_proxy=$http_proxy
 
 // 取消代理设置
 unset http_proxy;unset https_proxy;unset all_proxy
 ```
+
+### 验证是否生效
+
+在终端执行以下脚本可以验证：
+
+```shell
+curl https://www.google.com -I
+```
+
+如果返回结果第一行包含`HTTP/1.1 200 OK`则说明已生效。
+
 
 ## 取消 git 代理
 
