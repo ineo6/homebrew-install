@@ -26,9 +26,7 @@ img: /images/16910608535268/16912211144978.jpg
 
 ```shell
 ❯ brew -v
-Homebrew 4.1.0-27-g3dcf3db
-Homebrew/homebrew-core (git revision 468745ba82c; last commit 2023-07-23)
-Homebrew/homebrew-cask (git revision 4d3e61fae8; last commit 2023-07-23)
+Homebrew 4.1.24
 ```
 
 ## 安装 stable diffusion webui 的依赖
@@ -51,29 +49,26 @@ pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
 
 ## 下载 stable diffusion webui 代码
 
-在你想放置`stable diffusion webui`的目录下执行下面命令：
-
 ```shell
+cd ~
 git clone https://gitee.com/ineo6/stable-diffusion-webui.git
-```
-
-成功后会出现一个`stable-diffusion-webui`目录，后面模型要放置的`model`就是在这里。
-
-我们先进入到目录，以备后面操作使用：
-
-```shell
-cd stable-diffusion-webui
 ```
 
 ## 下载模型
 
 代码克隆下来后，还需要下载模型，一般模型文件后缀为`.ckpt`或者`.safetensors`，而且都比较大，是以`G`为单位。我们可以参照 [Wiki](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Installation-on-Apple-Silicon#downloading-stable-diffusion-models) 说明上的链接在[Hugging Face](https://huggingface.co/)上进行下载，这里一般下载 1.4 或者 1.5 版本的就行。
 
+注意：请点击括号内链接下载，如果无法访问可以尝试把链接复制到迅雷中下载。
+
 - [Stable DIffusion 1.4](https://huggingface.co/CompVis/stable-diffusion-v-1-4-original) ([sd-v1-4.ckpt](https://huggingface.co/CompVis/stable-diffusion-v-1-4-original/resolve/main/sd-v1-4.ckpt))
 - [Stable Diffusion 1.5](https://huggingface.co/runwayml/stable-diffusion-v1-5) ([v1-5-pruned-emaonly.ckpt](https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.ckpt))
 - [Stable Diffusion 1.5 Inpainting](https://huggingface.co/runwayml/stable-diffusion-inpainting) ([sd-v1-5-inpainting.ckpt](https://huggingface.co/runwayml/stable-diffusion-inpainting/resolve/main/sd-v1-5-inpainting.ckpt))
 - [Stable Diffusion 2.0](https://huggingface.co/stabilityai/stable-diffusion-2) ([768-v-ema.ckpt](https://huggingface.co/stabilityai/stable-diffusion-2/resolve/main/768-v-ema.ckpt))
 - [Stable Diffusion 2.1](https://huggingface.co/stabilityai/stable-diffusion-2-1) ([v2-1_768-ema-pruned.ckpt](https://huggingface.co/stabilityai/stable-diffusion-2-1/resolve/main/v2-1_768-ema-pruned.ckpt))
+
+也可以尝试使用备用百度网盘，里面只有`1.4`和`1.5`: 
+
+https://pan.baidu.com/s/10QCfqv26jAKQags4Aa8ZEw?pwd=vw5n 提取码: vw5n
 
 不过如果你想要下面这些很好看的图片，就要在[Civitai](https://civitai.com/)下载各种模型了。
 
@@ -98,8 +93,11 @@ stable-diffusion-webui/models/Stable-diffusion
 执行下面命令启动：
 
 ```shell
+cd ~/stable-diffusion-webui
 ./webui.sh
 ```
+
+注意：每次启动都需要这样执行。
 
 当你看到有如下内容时，大概率是成功了：
 
@@ -121,9 +119,9 @@ Running on local URL:  http://127.0.0.1:7860
 
 ```shell
 请选择一个加速源：
-1) ghproxy.com        3) gh.ddlc.top        5) gh.con.sh
-2) ghps.cc            4) hub.gitmirror.com
-#?   
+1) ghproxy.com      3) ghps.cc            5)hub.gitmirror.com
+2) 自营加速源         4) gh.ddlc.top        6) gh.con.sh
+#?
 ```
 
 
