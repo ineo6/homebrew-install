@@ -115,6 +115,21 @@ checkExecute() {
     fi
 }
 
+checkGitProxy() {
+  git_https_proxy=$(git config --global https.proxy)
+  git_http_proxy=$(git config --global http.proxy)
+  if [[ -z "$git_https_proxy"  &&  -z "$git_http_proxy" ]]; then
+  echo ""
+  else
+  warn "
+  发现git代理！如果后面出现git相关报错，尝试在终端执行下面命令：
+
+  git config --global --unset https.proxy
+  git config --global --unset http.proxy
+  "
+  fi
+}
+
 # Check if script is run non-interactively (e.g. CI)
 # If it is run non-interactively we should not prompt for passwords.
 # Always use single-quoted strings with `exp` expressions
@@ -970,6 +985,8 @@ EOABORT
   fi
 fi
 
+checkGitProxy
+
 if ! command -v curl >/dev/null
 then
   abort "$(
@@ -1143,14 +1160,6 @@ ohai "Downloading and installing Homebrew..."
 
 ring_bell
 
-ohai "Homebrew是由志愿者义务维护的，如果可以请考虑捐赠："
-echo "$(
-  cat <<EOS
-  ${tty_underline}https://github.com/Homebrew/brew#donations${tty_reset}
-EOS
-)
-"
-
 (
   cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
   execute "${USABLE_GIT}" "config" "--replace-all" "homebrew.analyticsmessage" "true"
@@ -1202,11 +1211,13 @@ then
 eval \$(${HOMEBREW_PREFIX}/bin/brew shellenv) #brew.idayer.com
 export HOMEBREW_API_DOMAIN=${HOMEBREW_API_DOMAIN} #brew.idayer.com
 export HOMEBREW_BOTTLE_DOMAIN=${HOMEBREW_BOTTLE_DOMAIN} #brew.idayer.com
+export HOMEBREW_PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/ #brew.idayer.com
 EOS
 else
   cat >> ${shell_rcfile} <<EOS
 export HOMEBREW_API_DOMAIN=${HOMEBREW_API_DOMAIN} #brew.idayer.com
 export HOMEBREW_BOTTLE_DOMAIN=${HOMEBREW_BOTTLE_DOMAIN} #brew.idayer.com
+export HOMEBREW_PIP_INDEX_URL=https://mirrors.aliyun.com/pypi/simple/ #brew.idayer.com
 EOS
 fi
 
@@ -1260,8 +1271,8 @@ echo ""
 ohai "🎉 恭喜，安装成功！"
 
 cat <<EOS
-- 安装成功后可以执行 ${tty_bold}brew help${tty_reset} 验证。
-- 教程文档: ${tty_underline}https://brew.idayer.com${tty_reset}
+- 验证命令： ${tty_bold}brew help${tty_reset}
+- 请收藏，谨防失联: ${tty_underline}https://brew.idayer.com${tty_reset}
 EOS
 
 echo ""

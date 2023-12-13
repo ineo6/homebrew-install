@@ -262,7 +262,7 @@ execute() {
 
 execute_sudo() {
   local -a args=("$@")
-  if have_sudo_access
+  if [[ "${EUID:-${UID}}" != "0" ]] && have_sudo_access
   then
     if [[ -n "${SUDO_ASKPASS-}" ]]
     then
@@ -484,7 +484,7 @@ ohai 'Checking for `sudo` access (which may request your password)...'
 
 if [[ -n "${HOMEBREW_ON_MACOS-}" ]]
 then
-  have_sudo_access
+  [[ "${EUID:-${UID}}" == "0" ]] || have_sudo_access
 elif ! [[ -w "${HOMEBREW_PREFIX}" ]] &&
      ! [[ -w "/home/linuxbrew" ]] &&
      ! [[ -w "/home" ]] &&
@@ -910,13 +910,6 @@ EOABORT
   fi
 fi
 
-# Set HOMEBREW_DEVELOPER on Linux systems where usable Git/cURL is not in /usr/bin
-if [[ -n "${HOMEBREW_ON_LINUX-}" && (-n "${HOMEBREW_CURL_PATH-}" || -n "${HOMEBREW_GIT_PATH-}") ]]
-then
-  ohai "Setting HOMEBREW_DEVELOPER to use Git/cURL not in /usr/bin"
-  export HOMEBREW_DEVELOPER=1
-fi
-
 ohai "Downloading and installing Homebrew..."
 (
   cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
@@ -1028,6 +1021,9 @@ case "${SHELL}" in
     else
       shell_rcfile="${ZDOTDIR:-"${HOME}"}/.zprofile"
     fi
+    ;;
+  */fish*)
+    shell_rcfile="${HOME}/.config/fish/config.fish"
     ;;
   *)
     shell_rcfile="${ENV:-"${HOME}/.profile"}"
