@@ -314,7 +314,7 @@ execute() {
 
 execute_sudo() {
   local -a args=("$@")
-  if have_sudo_access
+  if [[ "${EUID:-${UID}}" != "0" ]] && have_sudo_access
   then
     if [[ -n "${SUDO_ASKPASS-}" ]]
     then
@@ -536,7 +536,7 @@ ohai 'Checking for `sudo` access (which may request your password)...'
 
 if [[ -n "${HOMEBREW_ON_MACOS-}" ]]
 then
-  have_sudo_access
+  [[ "${EUID:-${UID}}" == "0" ]] || have_sudo_access
 elif ! [[ -w "${HOMEBREW_PREFIX}" ]] &&
      ! [[ -w "/home/linuxbrew" ]] &&
      ! [[ -w "/home" ]] &&
@@ -1077,8 +1077,14 @@ ohai "Downloading and installing Homebrew..."
 
   execute "${USABLE_GIT}" "fetch" "--force" "origin"
   execute "${USABLE_GIT}" "fetch" "--force" "--tags" "origin"
+  execute "${USABLE_GIT}" "remote" "set-head" "origin" "--auto" >/dev/null
 
-  execute "${USABLE_GIT}" "reset" "--hard" "origin/master"
+  LATEST_GIT_TAG="$("${USABLE_GIT}" tag --list --sort="-version:refname" | head -n1)"
+  if [[ -z "${LATEST_GIT_TAG}" ]]
+  then
+    abort "Failed to query latest Homebrew/brew Git tag."
+  fi
+  execute "${USABLE_GIT}" "checkout" "--force" "-B" "stable" "${LATEST_GIT_TAG}"
 
   if [[ "${HOMEBREW_REPOSITORY}" != "${HOMEBREW_PREFIX}" ]]
   then
@@ -1183,6 +1189,9 @@ case "${SHELL}" in
     else
       shell_rcfile="${ZDOTDIR:-"${HOME}"}/.zprofile"
     fi
+    ;;
+  */fish*)
+    shell_rcfile="${HOME}/.config/fish/config.fish"
     ;;
   *)
     shell_rcfile="${ENV:-"${HOME}/.profile"}"
