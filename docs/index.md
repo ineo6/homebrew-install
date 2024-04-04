@@ -17,8 +17,11 @@ description: Homebrew是macOS上最强大的包管理工具，可以帮你安装
 
 ## 快速安装
 
-```shell script
+```shell
 /bin/bash -c "$(curl -fsSL https://gitee.com/ineo6/homebrew-install/raw/master/install.sh)"
+
+# 备用安装链接
+/bin/bash -c "$(curl -fsSL https://b.idayer.com/brew.sh)"
 ```
 
 <Center>将以上命令粘贴至终端。脚本内置镜像，让Homebrew安装的更快。</Center>
