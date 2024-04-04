@@ -6,8 +6,8 @@
   "module": "dist/index.esm.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "start": "dumi dev",
-    "build": "dumi build",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider dumi dev",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider dumi build",
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "make": "node ./bin/update.js"
   },
