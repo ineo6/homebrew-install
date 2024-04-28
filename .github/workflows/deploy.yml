@@ -16,7 +16,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
@@ -27,6 +26,8 @@ jobs:
 
       - name: Build
         run: pnpm run build
+        env:
+          NODE_OPTIONS: "--openssl-legacy-provider"
 
       - name: Deploy to Server
         uses: burnett01/rsync-deployments@5.2.1
