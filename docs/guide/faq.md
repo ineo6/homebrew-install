@@ -17,8 +17,8 @@ source ~/.zprofile
 
 免责声明：列出以下内容仅仅是提供应急所需，不对服务的稳定性提供保证。
 
-- [一元机场](https://xn--4gq62f52gdss.com/#/register?code=a2ZU70bj)
-- [efc-cloud](https://invite.fastconnect.cc/#/register?code=ndwVZL5l)
+- [一元机场](https://xn--4gq62f52gdss.ink/#/register?code=a2ZU70bj)
+- [efc-cloud](https://www.easyfastcloud.com/#/register?code=P7M1kh27)
 
 ## 终端设置代理
 
