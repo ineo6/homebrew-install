@@ -47,7 +47,8 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.5.0",
-    "antd": "^4.13.1"
+    "antd": "^4.24.16",
+    "query-string": "^9.1.1"
   },
   "pnpm": {
     "patchedDependencies": {
