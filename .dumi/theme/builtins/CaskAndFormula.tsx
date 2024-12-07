@@ -70,9 +70,6 @@ const CaskAndFormula = ({}) => {
 
           if (result && result.data) {
             result.data.forEach(item => {
-              if (item.versions) {
-                item.versions = JSON.parse(item.versions)
-              }
             })
           }
 

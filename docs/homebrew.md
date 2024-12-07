@@ -3,10 +3,11 @@ nav:
   title: 应用
 toc: false
 sidemenu: false
+filePath: 
 ---
 
 # Cask && Formula
 
-如果我的工作帮助到你，您可以考虑请我喝杯咖啡。
+Homebrew应用列表。
 
 <CaskAndFormula></CaskAndFormula>

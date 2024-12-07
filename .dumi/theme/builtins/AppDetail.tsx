@@ -236,7 +236,7 @@ const AppDetail = ({}) => {
   };
 
   const renderVersionedFormulae = versionedFormulae => {
-    if (!versionedFormulae) return;
+    if (!versionedFormulae || !versionedFormulae.length) return;
 
     return (
       <>
@@ -245,6 +245,7 @@ const AppDetail = ({}) => {
           columns={[
             {
               dataIndex: 'name',
+              width: 200,
               render: (text, row) => {
                 return <div>{text}</div>;
               },
@@ -266,7 +267,7 @@ const AppDetail = ({}) => {
   };
 
   const renderDep = (deps, title) => {
-    if (!deps) return;
+    if (!deps || !deps.length) return;
 
     return (
       <>
@@ -275,6 +276,7 @@ const AppDetail = ({}) => {
           columns={[
             {
               dataIndex: 'name',
+              width: 200,
               render: (text, row) => {
                 return <div>{text}</div>;
               },
