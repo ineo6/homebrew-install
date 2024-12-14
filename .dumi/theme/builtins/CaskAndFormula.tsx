@@ -47,7 +47,7 @@ const CaskAndFormula = ({}) => {
 
   const getCaskList = () => {
     fetch(
-      'http://localhost:8000/homebrew/cask-list?' +
+      AVALON_SERVER + '/homebrew/cask-list?' +
         queryString.stringify(listParams),
     )
       .then(response => response.json())
@@ -60,7 +60,7 @@ const CaskAndFormula = ({}) => {
 
   const getFormula = () => {
     fetch(
-      'http://localhost:8000/homebrew/formula-list?' +
+      AVALON_SERVER + '/homebrew/formula-list?' +
         queryString.stringify(listParams),
     )
       .then(response => response.json())

@@ -72,7 +72,7 @@ const AppDetail = ({}) => {
 
   const getCaskDetail = id => {
     fetch(
-      'http://localhost:8000/homebrew/cask-detail?' +
+      AVALON_SERVER + '/homebrew/cask-detail?' +
         queryString.stringify({
           id,
         }),
@@ -92,7 +92,7 @@ const AppDetail = ({}) => {
 
   const getFormulaDetail = id => {
     fetch(
-      'http://localhost:8000/homebrew/formula-detail?' +
+      AVALON_SERVER + '/homebrew/formula-detail?' +
         queryString.stringify({
           id,
         }),
