@@ -79,11 +79,11 @@ const CaskAndFormula = ({}) => {
   };
 
   const openCaskDetail = item => {
-    window.open('/app-detail?cid=' + item.id);
+    window.open('/app/detail?cid=' + item.id);
   };
 
   const openFormulaDetail = item => {
-    window.open('/app-detail?fid=' + item.id);
+    window.open('/app/detail?fid=' + item.id);
   };
 
   const onSearch = value => {

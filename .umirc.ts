@@ -44,7 +44,17 @@ export default defineConfig({
         title: '快系列-你快了吗',
         children: ['/install/stable-diffusion-webui', '/install/nvm-for-nodejs', '/install/game-porting-toolkit'],
       }
-    ]
+    ],
+    '/app': [
+      {
+        title: 'App',
+        children: ['/app/homebrew'],
+      },
+      {
+        title: 'Detail',
+        children: ['/app/detail'],
+      }
+    ],
   },
   extraBabelPlugins: [
     [

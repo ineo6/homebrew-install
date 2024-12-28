@@ -1,6 +1,6 @@
 ---
 nav:
-  title: 应用
+  title: 软件
 toc: false
 sidemenu: false
 filePath: 
