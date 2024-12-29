@@ -5,7 +5,7 @@ export default defineConfig({
   mode: 'site',
   logo: '/images/homebrew-256x256.png',
   define: {
-    'AVALON_SERVER': process.env.NODE_ENV === 'production' ? 'https://avalon.idayer.com' : 'http://localhost:8000',
+    'AVALON_SERVER': process.env.NODE_ENV === 'production' ? 'https://api.idayer.com' : 'http://localhost:8000',
   },
   favicon: '/favicon.ico',
   locales: [['zh-CN', '中文']],
