@@ -39,27 +39,17 @@ then
   abort 'Bash must not run in POSIX mode. Please unset POSIXLY_CORRECT and try again.'
 fi
 
-usage() {
-  cat <<EOS
-Homebrew Installer
-Usage: [NONINTERACTIVE=1] [CI=1] install.sh [options]
-    -h, --help       显示帮助信息.
-    NONINTERACTIVE   安装时不需要用户确认输入
-    CI               CI模式安装
-EOS
-  exit "${1:-0}"
-}
-
-while [[ $# -gt 0 ]]
-do
-  case "$1" in
-    -h | --help) usage ;;
-    *)
-      warn "Unrecognized option: '$1'"
-      usage 1
-      ;;
-  esac
-done
+# Check for file that prevents Homebrew installation
+if [[ -f "/etc/homebrew/brew.no_install" ]]
+then
+  BREW_NO_INSTALL="$(cat "/etc/homebrew/brew.no_install" 2>/dev/null)"
+  if [[ -n "${BREW_NO_INSTALL}" ]]
+  then
+    abort "Homebrew cannot be installed because ${BREW_NO_INSTALL}."
+  else
+    abort "Homebrew cannot be installed because /etc/homebrew/brew.no_install exists!"
+  fi
+fi
 
 # string formatters
 if [[ -t 1 ]]
@@ -98,6 +88,28 @@ ohai() {
 warn() {
   printf "${tty_red}Warning${tty_reset}: %s\n" "$(chomp "$1")" >&2
 }
+
+usage() {
+  cat <<EOS
+Homebrew Installer
+Usage: [NONINTERACTIVE=1] [CI=1] install.sh [options]
+    -h, --help       显示帮助信息.
+    NONINTERACTIVE   安装时不需要用户确认输入
+    CI               CI模式安装
+EOS
+  exit "${1:-0}"
+}
+
+while [[ $# -gt 0 ]]
+do
+  case "$1" in
+    -h | --help) usage ;;
+    *)
+      warn "Unrecognized option: '$1'"
+      usage 1
+      ;;
+  esac
+done
 
 highlight() {
   printf "${tty_green}%s${tty_reset}\n" "$(shell_join "$@")"
@@ -192,7 +204,7 @@ then
   fi
   HOMEBREW_CACHE="${HOME}/Library/Caches/Homebrew"
 
-  STAT_PRINTF=("stat" "-f")
+  STAT_PRINTF=("/usr/bin/stat" "-f")
   PERMISSION_FORMAT="%A"
   CHOWN=("/usr/sbin/chown")
   CHGRP=("/usr/bin/chgrp")
@@ -207,7 +219,7 @@ else
   HOMEBREW_REPOSITORY="${HOMEBREW_PREFIX}/Homebrew"
   HOMEBREW_CACHE="${HOME}/.cache/Homebrew"
 
-  STAT_PRINTF=("stat" "--printf")
+  STAT_PRINTF=("/usr/bin/stat" "--printf")
   PERMISSION_FORMAT="%a"
   CHOWN=("/bin/chown")
   CHGRP=("/bin/chgrp")
@@ -255,9 +267,9 @@ export HOMEBREW_API_DOMAIN
 export HOMEBREW_BOTTLE_DOMAIN
 
 # TODO: bump version when new macOS is released or announced
-MACOS_NEWEST_UNSUPPORTED="15.0"
+MACOS_NEWEST_UNSUPPORTED="16.0"
 # TODO: bump version when new macOS is released
-MACOS_OLDEST_SUPPORTED="12.0"
+MACOS_OLDEST_SUPPORTED="13.0"
 
 # For Homebrew on Linux
 REQUIRED_RUBY_VERSION=2.6    # https://github.com/Homebrew/brew/pull/6556
@@ -309,6 +321,25 @@ execute() {
   if ! "$@"
   then
     abort "$(printf "Failed during: %s" "$(shell_join "$@")")"
+  fi
+}
+
+retry() {
+  local tries="$1" n="$1" pause=2
+  shift
+  if ! "$@"
+  then
+    while [[ $((--n)) -gt 0 ]]
+    do
+      warn "$(printf "Trying again in %d seconds: %s" "${pause}" "$(shell_join "$@")")"
+      sleep "${pause}"
+      ((pause *= 2))
+      if "$@"
+      then
+        return
+      fi
+    done
+    abort "$(printf "Failed %d times doing: %s" "${tries}" "$(shell_join "$@")")"
   fi
 }
 
@@ -442,6 +473,12 @@ test_ruby() {
 test_curl() {
   if [[ ! -x "$1" ]]
   then
+    return 1
+  fi
+
+  if [[ "$1" == "/snap/bin/curl" ]]
+  then
+    warn "Ignoring $1 (curl snap is too restricted)"
     return 1
   fi
 
@@ -580,18 +617,9 @@ then
     abort "Homebrew is only supported on Intel and ARM processors!"
   fi
 else
-  # On Linux, support only 64-bit Intel
-  if [[ "${UNAME_MACHINE}" == "aarch64" ]]
+  if [[ "${UNAME_MACHINE}" != "x86_64" ]] && [[ "${UNAME_MACHINE}" != "aarch64" ]]
   then
-    abort "$(
-      cat <<EOABORT
-Homebrew on Linux is not supported on ARM processors.
-  ${tty_underline}https://docs.brew.sh/Homebrew-on-Linux#arm-unsupported${tty_reset}
-EOABORT
-    )"
-  elif [[ "${UNAME_MACHINE}" != "x86_64" ]]
-  then
-    abort "Homebrew on Linux is only supported on Intel processors!"
+    abort "Homebrew on Linux is only supported on Intel x86_64 and ARM64 processors!"
   fi
 fi
 
@@ -1075,8 +1103,15 @@ ohai "Downloading and installing Homebrew..."
   # make sure symlinks are saved as-is
   execute "${USABLE_GIT}" "config" "--bool" "core.symlinks" "true"
 
-  execute "${USABLE_GIT}" "fetch" "--force" "origin"
-  execute "${USABLE_GIT}" "fetch" "--force" "--tags" "origin"
+  if [[ -z "${NONINTERACTIVE-}" ]]
+  then
+    quiet_progress=("--quiet" "--progress")
+  else
+    quiet_progress=("--quiet")
+  fi
+  retry 5 "${USABLE_GIT}" "fetch" "${quiet_progress[@]}" "--force" "origin"
+  retry 5 "${USABLE_GIT}" "fetch" "${quiet_progress[@]}" "--force" "--tags" "origin"
+
   execute "${USABLE_GIT}" "remote" "set-head" "origin" "--auto" >/dev/null
 
   LATEST_GIT_TAG="$("${USABLE_GIT}" tag --list --sort="-version:refname" | head -n1)"
@@ -1084,7 +1119,7 @@ ohai "Downloading and installing Homebrew..."
   then
     abort "Failed to query latest Homebrew/brew Git tag."
   fi
-  execute "${USABLE_GIT}" "checkout" "--force" "-B" "stable" "${LATEST_GIT_TAG}"
+  execute "${USABLE_GIT}" "checkout" "--quiet" "--force" "-B" "stable" "${LATEST_GIT_TAG}"
 
   if [[ "${HOMEBREW_REPOSITORY}" != "${HOMEBREW_PREFIX}" ]]
   then
@@ -1110,7 +1145,8 @@ ohai "Downloading and installing Homebrew..."
       execute "${USABLE_GIT}" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
       execute "${USABLE_GIT}" "config" "--bool" "core.autocrlf" "false"
       execute "${USABLE_GIT}" "config" "--bool" "core.symlinks" "true"
-      execute "${USABLE_GIT}" "fetch" "--force" "origin" "refs/heads/master:refs/remotes/origin/master"
+      retry 5 "${USABLE_GIT}" "fetch" "--force" "${quiet_progress[@]}" \
+        "origin" "refs/heads/master:refs/remotes/origin/master"
       execute "${USABLE_GIT}" "remote" "set-head" "origin" "--auto" >/dev/null
       execute "${USABLE_GIT}" "reset" "--hard" "origin/master"
 
@@ -1118,53 +1154,39 @@ ohai "Downloading and installing Homebrew..."
     ) || exit 1
   fi
 
-  if [[ -n "${HOMEBREW_NO_INSTALL_FROM_API-}" && ! -d "${HOMEBREW_CASK}" ]]
-  then
-    # Always use single-quoted strings with `exp` expressions
-    # shellcheck disable=SC2016
-    ohai 'Tapping homebrew/cask because `$HOMEBREW_NO_INSTALL_FROM_API` is set.'
-    (
-      execute "${MKDIR[@]}" "${HOMEBREW_CASK}"
-      cd "${HOMEBREW_CASK}" >/dev/null || return
-
-      execute "${USABLE_GIT}" "-c" "init.defaultBranch=master" "init" "--quiet"
-      execute "${USABLE_GIT}" "config" "remote.origin.url" "${HOMEBREW_CASK_GIT_REMOTE}"
-      execute "${USABLE_GIT}" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
-      execute "${USABLE_GIT}" "config" "--bool" "core.autocrlf" "false"
-      execute "${USABLE_GIT}" "config" "--bool" "core.symlinks" "true"
-      execute "${USABLE_GIT}" "fetch" "--force" "origin" "refs/heads/master:refs/remotes/origin/master"
-      execute "${USABLE_GIT}" "remote" "set-head" "origin" "--auto" >/dev/null
-      execute "${USABLE_GIT}" "reset" "--hard" "origin/master"
-
-      cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
-    ) || exit 1
-  fi
-
-  if [[ ! -d "${HOMEBREW_SERVICES}" ]]
-    then
-      # Always use single-quoted strings with `exp` expressions
-      # shellcheck disable=SC2016
-      ohai 'Tapping homebrew/services'
-      (
-        execute "${MKDIR[@]}" "${HOMEBREW_SERVICES}"
-        cd "${HOMEBREW_SERVICES}" >/dev/null || return
-
-        execute "${USABLE_GIT}" "-c" "init.defaultBranch=master" "init" "--quiet"
-        execute "${USABLE_GIT}" "config" "remote.origin.url" "${HOMEBREW_SERVICES_DEFAULT_GIT_REMOTE}"
-        execute "${USABLE_GIT}" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
-        execute "${USABLE_GIT}" "config" "--bool" "core.autocrlf" "false"
-        execute "${USABLE_GIT}" "config" "--bool" "core.symlinks" "true"
-        execute "${USABLE_GIT}" "fetch" "--force" "origin" "refs/heads/master:refs/remotes/origin/master"
-        execute "${USABLE_GIT}" "remote" "set-head" "origin" "--auto" >/dev/null
-        execute "${USABLE_GIT}" "reset" "--hard" "origin/master"
-
-        cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
-      ) || exit 1
-  fi
   execute "${HOMEBREW_PREFIX}/bin/brew" "update" "--force" "--quiet"
 ) || exit 1
 
+if [[ ":${PATH}:" != *":${HOMEBREW_PREFIX}/bin:"* ]]
+then
+  warn "${HOMEBREW_PREFIX}/bin is not in your PATH.
+  Instructions on how to configure your shell for Homebrew
+  can be found in the 'Next steps' section below."
+fi
+
+ohai "Installation successful!"
+echo
+
 ring_bell
+
+# Use an extra newline and bold to avoid this being missed.
+ohai "Homebrew has enabled anonymous aggregate formulae and cask analytics."
+echo "$(
+  cat <<EOS
+${tty_bold}Read the analytics documentation (and how to opt-out) here:
+  ${tty_underline}https://docs.brew.sh/Analytics${tty_reset}
+No analytics data has been sent yet (nor will any be during this ${tty_bold}install${tty_reset} run).
+EOS
+)
+"
+
+ohai "Homebrew is run entirely by unpaid volunteers. Please consider donating:"
+echo "$(
+  cat <<EOS
+  ${tty_underline}https://github.com/Homebrew/brew#donations${tty_reset}
+EOS
+)
+"
 
 (
   cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
@@ -1256,6 +1278,9 @@ then
   if [[ -x "$(command -v apt-get)" ]]
   then
     echo "    sudo apt-get install build-essential"
+  elif [[ -x "$(command -v dnf)" ]]
+  then
+    echo "    sudo dnf group install development-tools"
   elif [[ -x "$(command -v yum)" ]]
   then
     echo "    sudo yum groupinstall 'Development Tools'"
