@@ -57,6 +57,7 @@ const AppDetail = ({}) => {
   const [caskDetail, setCaskDetail] = useState({});
   const [formulaDetail, setFormulaDetail] = useState({});
   const [isCask, setIsCask] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const query = getQuery();
@@ -72,7 +73,8 @@ const AppDetail = ({}) => {
 
   const getCaskDetail = id => {
     fetch(
-      AVALON_SERVER + '/homebrew/cask-detail?' +
+      AVALON_SERVER +
+        '/homebrew/cask-detail?' +
         queryString.stringify({
           id,
         }),
@@ -86,13 +88,15 @@ const AppDetail = ({}) => {
           result.depends_on = JSON.parse(result.depends_on);
 
           setCaskDetail(result);
+          setIsLoading(false);
         }
       });
   };
 
   const getFormulaDetail = id => {
     fetch(
-      AVALON_SERVER + '/homebrew/formula-detail?' +
+      AVALON_SERVER +
+        '/homebrew/formula-detail?' +
         queryString.stringify({
           id,
         }),
@@ -107,8 +111,9 @@ const AppDetail = ({}) => {
           // result.dependencies = JSON.parse(result.dependencies);
           // result.build_dependencies = JSON.parse(result.build_dependencies);
 
-          console.log(result);
           setFormulaDetail(result);
+
+          setIsLoading(false);
         }
       });
   };
@@ -219,6 +224,12 @@ const AppDetail = ({}) => {
             <h2>{caskDetail.desc}</h2>
           </span>
         </div>
+
+        <div>
+          <a href={caskDetail.homepage} target="_blank" rel="noopener noreferrer">
+            { caskDetail.homepage }
+          </a>
+        </div>
         <h3 className="app-detail-content-title">安装命令</h3>
 
         <SourceCode
@@ -283,7 +294,7 @@ const AppDetail = ({}) => {
             },
             {
               dataIndex: 'versions',
-              render: (text) => {
+              render: text => {
                 return <div>{text.stable}</div>;
               },
             },
@@ -308,6 +319,11 @@ const AppDetail = ({}) => {
             <h2>{formulaDetail.desc}</h2>
           </span>
         </div>
+        <div>
+          <a href={formulaDetail.homepage} target="_blank" rel="noopener noreferrer">
+            { formulaDetail.homepage }
+          </a>
+        </div>
         <h3 className="app-detail-content-title">安装命令</h3>
 
         <SourceCode code={`brew install ${formulaDetail.name}`} lang="bash" />
@@ -317,6 +333,12 @@ const AppDetail = ({}) => {
         {renderDep(formulaDetail.dependencies, '依赖')}
 
         {renderDep(formulaDetail.build_dependencies, '构建依赖')}
+
+        {formulaDetail.caveats && (
+          <Alert type="info">
+            <span style={{whiteSpace: 'pre-wrap'}}>{formulaDetail.caveats}</span>
+          </Alert>
+        )}
       </>
     );
   };
@@ -324,7 +346,9 @@ const AppDetail = ({}) => {
   return (
     <div className="__dumi-default-app-detail">
       <div className="app-detail-content">
-        {isCask ? renderCask() : renderFormula()}
+        {
+          isLoading ? (<div className="loading">加载中...</div>) : (isCask ? renderCask() : renderFormula() )
+        }
       </div>
     </div>
   );
