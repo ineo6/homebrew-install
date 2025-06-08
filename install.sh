@@ -835,7 +835,7 @@ cat <<EOS
 
 EOS
 
-highlight "安装遇到问题，请添加讨论群寻求Homebre的安装帮助。"
+highlight "安装遇到问题，请添加讨论群寻求Homebrew的安装帮助。"
 
 echo ""
 echo "当然也非常欢迎大家${tty_blue}加群${tty_reset}聊天${tty_bold}摸鱼，讨论mac、软件、摄影${tty_reset}，扫码关注公众号：${tty_blue}湖中剑${tty_reset}，回复'brew'加群。"
