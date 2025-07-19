@@ -186,7 +186,7 @@ else
 fi
 
 # Required installation paths. To install elsewhere (which is unsupported)
-# you can untar https://github.com/Homebrew/brew/tarball/master
+# you can untar https://github.com/Homebrew/brew/tarball/main
 # anywhere you like.
 if [[ -n "${HOMEBREW_ON_MACOS-}" ]]
 then
@@ -282,6 +282,13 @@ export HOMEBREW_NO_ANALYTICS_THIS_RUN=1
 export HOMEBREW_NO_ANALYTICS_MESSAGE_OUTPUT=1
 
 unset HAVE_SUDO_ACCESS # unset this from the environment
+
+# create paths.d file for /opt/homebrew installs
+# (/usr/local/bin is already in the PATH)
+if [[ -d "/etc/paths.d" && "${HOMEBREW_PREFIX}" != "/usr/local" && -x "$(command -v tee)" ]]
+then
+  ADD_PATHS_D=1
+fi
 
 have_sudo_access() {
   if [[ ! -x "/usr/bin/sudo" ]]
@@ -581,7 +588,7 @@ elif ! [[ -w "${HOMEBREW_PREFIX}" ]] &&
 then
   abort "$(
     cat <<EOABORT
-Insufficient permissions to install Homebrew to \"${HOMEBREW_PREFIX}\" (the default prefix).
+Insufficient permissions to install Homebrew to "${HOMEBREW_PREFIX}" (the default prefix).
 
 Alternative (unsupported) installation methods are available at:
 https://docs.brew.sh/Installation#alternative-installs
@@ -1091,11 +1098,12 @@ ohai "Downloading and installing Homebrew..."
   cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
 
   # we do it in four steps to avoid merge errors when reinstalling
-  execute "${USABLE_GIT}" "-c" "init.defaultBranch=master" "init" "--quiet"
+  execute "${USABLE_GIT}" "-c" "init.defaultBranch=main" "init" "--quiet"
 
   # "git remote add" will fail if the remote is defined in the global config
   execute "${USABLE_GIT}" "config" "remote.origin.url" "${HOMEBREW_BREW_GIT_REMOTE}"
   execute "${USABLE_GIT}" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
+  execute "${USABLE_GIT}" "config" "--bool" "fetch.prune" "true"
 
   # ensure we don't munge line endings on checkout
   execute "${USABLE_GIT}" "config" "--bool" "core.autocrlf" "false"
@@ -1140,29 +1148,41 @@ ohai "Downloading and installing Homebrew..."
       execute "${MKDIR[@]}" "${HOMEBREW_CORE}"
       cd "${HOMEBREW_CORE}" >/dev/null || return
 
-      execute "${USABLE_GIT}" "-c" "init.defaultBranch=master" "init" "--quiet"
+      execute "${USABLE_GIT}" "-c" "init.defaultBranch=main" "init" "--quiet"
       execute "${USABLE_GIT}" "config" "remote.origin.url" "${HOMEBREW_CORE_GIT_REMOTE}"
       execute "${USABLE_GIT}" "config" "remote.origin.fetch" "+refs/heads/*:refs/remotes/origin/*"
+      execute "${USABLE_GIT}" "config" "--bool" "fetch.prune" "true"
       execute "${USABLE_GIT}" "config" "--bool" "core.autocrlf" "false"
       execute "${USABLE_GIT}" "config" "--bool" "core.symlinks" "true"
       retry 5 "${USABLE_GIT}" "fetch" "--force" "${quiet_progress[@]}" \
-        "origin" "refs/heads/master:refs/remotes/origin/master"
+        "origin" "refs/heads/main:refs/remotes/origin/main"
       execute "${USABLE_GIT}" "remote" "set-head" "origin" "--auto" >/dev/null
-      execute "${USABLE_GIT}" "reset" "--hard" "origin/master"
+      execute "${USABLE_GIT}" "reset" "--hard" "origin/main"
 
       cd "${HOMEBREW_REPOSITORY}" >/dev/null || return
     ) || exit 1
   fi
 
-  execute "${HOMEBREW_PREFIX}/bin/brew" "update" "--force" "--quiet"
-) || exit 1
+  if [[ -n "${ADD_PATHS_D-}" ]]
+  then
+    execute_sudo "${MKDIR[@]}" /etc/paths.d
+    echo "${HOMEBREW_PREFIX}/bin" | execute_sudo tee /etc/paths.d/homebrew
+    execute_sudo "${CHOWN[@]}" root:wheel /etc/paths.d/homebrew
+    execute_sudo "${CHMOD[@]}" "a+r" /etc/paths.d/homebrew
+  elif [[ ":${PATH}:" != *":${HOMEBREW_PREFIX}/bin:"* ]]
+  then
+    PATH_WARN=1
+  fi
 
-if [[ ":${PATH}:" != *":${HOMEBREW_PREFIX}/bin:"* ]]
-then
-  warn "${HOMEBREW_PREFIX}/bin is not in your PATH.
+  execute "${HOMEBREW_PREFIX}/bin/brew" "update" "--force" "--quiet"
+
+  if [[ -n "${PATH_WARN-}" ]]
+  then
+    warn "${HOMEBREW_PREFIX}/bin is not in your PATH.
   Instructions on how to configure your shell for Homebrew
   can be found in the 'Next steps' section below."
-fi
+  fi
+) || exit 1
 
 ohai "Installation successful!"
 echo
