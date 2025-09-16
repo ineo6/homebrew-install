@@ -323,16 +323,43 @@ body {
   margin-top: 20px;
 }
 
-.waimai-banner {
+.waimai-mini-banner {
   display: inline-block;
   vertical-align: middle;
 
-  .waimai-banner-img {
+  &-img {
     height: 64px;
     cursor: pointer;
   }
 
-  .waimai-banner-tiny-img {
+  &-tiny-img {
+    cursor: pointer;
+    height: 50px;
+    display: none;
+    margin-left: 20px;
+  }
+
+  @media @mobile {
+    .waimai-mini-banner-img {
+      display: none;
+    }
+
+    .waimai-mini-banner-tiny-img {
+      display: block;
+    }
+  }
+}
+
+.waimai-banner {
+  display: inline-block;
+  vertical-align: middle;
+
+  &-img {
+    height: 64px;
+    cursor: pointer;
+  }
+
+  &-tiny-img {
     cursor: pointer;
     height: 50px;
     display: none;

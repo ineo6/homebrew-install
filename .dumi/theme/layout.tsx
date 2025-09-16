@@ -5,9 +5,9 @@ import Navbar from 'dumi-theme-default/src/components/Navbar';
 import SideMenu from 'dumi-theme-default/src/components/SideMenu';
 import SlugList from 'dumi-theme-default/src/components/SlugList';
 import SearchBar from 'dumi-theme-default/src/components/SearchBar';
-import { Popover } from 'antd';
 import { Helmet } from 'dumi'
 import Notice from './Notice';
+import WaimaiNotice from './WaimaiNotice';
 import { useLocation } from 'react-router-dom'
 import './style/layout.less';
 
@@ -27,27 +27,41 @@ const Hero = hero => (
   </>
 );
 
+// const WaimaiMiniBanner = () => (
+//   <div className="waimai-mini-banner">
+//     <Popover
+//       placement="bottom"
+//       content={
+//         <>
+//           <p style={{ textAlign: 'center' }}>天天有点券</p>
+//           <img
+//             src="/images/mini-waimai.jpg"
+//             style={{ height: '129px', width: '129px' }}
+//           />
+//         </>
+//       }
+//       trigger="hover"
+//     >
+//       <img className="waimai-mini-banner-img" src="/images/waimai-banner.png" />
+//       <img
+//         className="waimai-mini-banner-tiny-img"
+//         src="/images/waimai-banner-sm.png"
+//       />
+//     </Popover>
+//   </div>
+// );
+
+const openWechatSite = () => {
+  window.open('https://mp.weixin.qq.com/s/pvO1L48GmOkIhVu3PrdcOQ', '_blank');
+}
+
 const WaimaiBanner = () => (
-  <div className="waimai-banner">
-    <Popover
-      placement="bottom"
-      content={
-        <>
-          <p style={{ textAlign: 'center' }}>天天有点券</p>
-          <img
-            src="/images/mini-waimai.jpg"
-            style={{ height: '129px', width: '129px' }}
-          />
-        </>
-      }
-      trigger="hover"
-    >
-      <img className="waimai-banner-img" src="/images/waimai-banner.png" />
+  <div className="waimai-banner" onClick={openWechatSite}>
+    <img className="waimai-banner-img" src="/images/waimai-banner-top.gif" />
       <img
         className="waimai-banner-tiny-img"
         src="/images/waimai-banner-sm.png"
       />
-    </Popover>
   </div>
 );
 
@@ -98,6 +112,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
     Boolean(meta.slugs?.length) &&
     (meta.toc === 'content' || meta.toc === undefined) &&
     !meta.gapless;
+  const showWaimai = meta.waimai
   const isCN = /^zh|cn$/i.test(locale);
   const updatedTime: any = new Date(meta.updatedTime).toLocaleString([], {
     hour12: false,
@@ -152,6 +167,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
         location={location}
         navPrefix={
           <div style={{ display: 'inline-block' }}>
+            <WaimaiBanner/>
             <SearchBar />
           </div>
         }
@@ -197,6 +213,9 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location }) => {
       {!showHero && !showFeatures && meta.filePath && !meta.gapless && (
         <Notice />
       )}
+      {
+        showWaimai && <WaimaiNotice />
+      }
     </div>
   );
 };

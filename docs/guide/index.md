@@ -1,7 +1,9 @@
 ---
 nav:
   title: 指南
-order: 1
+  order: 1
+waimai: true
+
 ---
 
 # 介 绍
