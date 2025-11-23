@@ -5,7 +5,10 @@ export default defineConfig({
   mode: 'site',
   logo: '/images/homebrew-256x256.png',
   define: {
-    'AVALON_SERVER': process.env.NODE_ENV === 'production' ? 'https://api.idayer.com' : 'http://localhost:8000',
+    AVALON_SERVER:
+      process.env.NODE_ENV === 'production'
+        ? 'https://api.idayer.com'
+        : 'http://localhost:8000',
   },
   favicon: '/favicon.ico',
   locales: [['zh-CN', '中文']],
@@ -23,27 +26,29 @@ export default defineConfig({
         children: ['/guide/index', '/guide/how-it-works', '/guide/start'],
       },
       {
+        title: '高级技巧',
+        children: ['/guide/advanced-tips'],
+      },
+      {
         title: '相 关',
-        children: ['/guide/github'],
+        children: ['/guide/github', '/guide/change-source'],
       },
       {
-        title: '工 具',
-        children: ['/guide/change-source'],
-      },
-      {
-        title: 'M1芯片',
-        path: '/guide/m1/',
-      },
-      {
-        title: 'FAQ',
-        path: '/guide/faq/',
+        title: '问题解决',
+        children: ['/guide/faq'],
       },
     ],
     '/install': [
       {
         title: '快系列-你快了吗',
-        children: ['/install/stable-diffusion-webui', '/install/nvm-for-nodejs', '/install/game-porting-toolkit'],
-      }
+        children: [
+          '/install/stable-diffusion-webui',
+          '/install/nvm-for-nodejs',
+          '/install/game-porting-toolkit',
+          '/install/top-10-dev-tools',
+          '/install/web-dev-environment',
+        ],
+      },
     ],
     '/app': [
       {
@@ -53,7 +58,7 @@ export default defineConfig({
       {
         title: 'Detail',
         children: ['/app/detail'],
-      }
+      },
     ],
   },
   extraBabelPlugins: [
