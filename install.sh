@@ -219,7 +219,7 @@ else
   HOMEBREW_REPOSITORY="${HOMEBREW_PREFIX}/Homebrew"
   HOMEBREW_CACHE="${HOME}/.cache/Homebrew"
 
-  STAT_PRINTF=("/usr/bin/stat" "--printf")
+  STAT_PRINTF=("/usr/bin/stat" "-c")
   PERMISSION_FORMAT="%a"
   CHOWN=("/bin/chown")
   CHGRP=("/bin/chgrp")
@@ -238,7 +238,6 @@ HOMEBREW_BREW_DEFAULT_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homeb
 HOMEBREW_CORE_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
 
 HOMEBREW_CASK_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-cask.git"
-HOMEBREW_SERVICES_DEFAULT_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-services.git"
 
 HOMEBREW_API_DEFAULT_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 HOMEBREW_BOTTLE_DEFAULT_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/bottles"
@@ -267,12 +266,12 @@ export HOMEBREW_API_DOMAIN
 export HOMEBREW_BOTTLE_DOMAIN
 
 # TODO: bump version when new macOS is released or announced
-MACOS_NEWEST_UNSUPPORTED="16.0"
+MACOS_NEWEST_UNSUPPORTED="27.0"
 # TODO: bump version when new macOS is released
-MACOS_OLDEST_SUPPORTED="13.0"
+MACOS_OLDEST_SUPPORTED="14.0"
 
 # For Homebrew on Linux
-REQUIRED_RUBY_VERSION=2.6    # https://github.com/Homebrew/brew/pull/6556
+REQUIRED_RUBY_VERSION=3.4    # https://github.com/Homebrew/brew/pull/19779
 REQUIRED_GLIBC_VERSION=2.13  # https://docs.brew.sh/Homebrew-on-Linux#requirements
 REQUIRED_CURL_VERSION=7.41.0 # HOMEBREW_MINIMUM_CURL_VERSION in brew.sh in Homebrew/brew
 REQUIRED_GIT_VERSION=2.7.0   # HOMEBREW_MINIMUM_GIT_VERSION in brew.sh in Homebrew/brew
@@ -473,8 +472,8 @@ test_ruby() {
   fi
 
   "$1" --enable-frozen-string-literal --disable=gems,did_you_mean,rubyopt -rrubygems -e \
-    "abort if Gem::Version.new(RUBY_VERSION.to_s.dup).to_s.split('.').first(2) != \
-              Gem::Version.new('${REQUIRED_RUBY_VERSION}').to_s.split('.').first(2)" 2>/dev/null
+    "abort if Gem::Version.new(RUBY_VERSION) < \
+              Gem::Version.new('${REQUIRED_RUBY_VERSION}')" 2>/dev/null
 }
 
 test_curl() {
@@ -541,7 +540,7 @@ find_tool() {
 }
 
 no_usable_ruby() {
-  [[ -z "$(find_tool ruby)" ]]
+  [[ -z "$(find_tool ruby)" ]] || ! ruby -e "require 'erb'"
 }
 
 outdated_glibc() {
@@ -550,17 +549,22 @@ outdated_glibc() {
   version_lt "${glibc_version}" "${REQUIRED_GLIBC_VERSION}"
 }
 
-if [[ -n "${HOMEBREW_ON_LINUX-}" ]] && no_usable_ruby && outdated_glibc
+if [[ -n "${HOMEBREW_ON_LINUX-}" ]] && no_usable_ruby
 then
-  abort "$(
-    cat <<EOABORT
+  if outdated_glibc
+  then
+    abort "$(
+      cat <<EOABORT
 Homebrew requires Ruby ${REQUIRED_RUBY_VERSION} which was not found on your system.
 Homebrew portable Ruby requires Glibc version ${REQUIRED_GLIBC_VERSION} or newer,
 and your Glibc version is too old. See:
   ${tty_underline}https://docs.brew.sh/Homebrew-on-Linux#requirements${tty_reset}
 Please install Ruby ${REQUIRED_RUBY_VERSION} and add its location to your PATH.
 EOABORT
-  )"
+    )"
+  else
+    export HOMEBREW_FORCE_VENDOR_RUBY=1
+  fi
 fi
 
 # Invalidate sudo timestamp before exiting (if it wasn't active before).
@@ -600,7 +604,6 @@ EOABORT
 fi
 HOMEBREW_CORE="${HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-core"
 HOMEBREW_CASK="${HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-cask"
-HOMEBREW_SERVICES="${HOMEBREW_REPOSITORY}/Library/Taps/homebrew/homebrew-services"
 
 check_run_command_as_root
 
@@ -668,16 +671,20 @@ EOS
   fi
 fi
 
-# ohai "脚本会安装以下内容:"
-# echo "${HOMEBREW_PREFIX}/bin/brew"
-# echo "${HOMEBREW_PREFIX}/share/doc/homebrew"
-# echo "${HOMEBREW_PREFIX}/share/man/man1/brew.1"
-# echo "${HOMEBREW_PREFIX}/share/zsh/site-functions/_brew"
-# echo "${HOMEBREW_PREFIX}/etc/bash_completion.d/brew"
-# echo "${HOMEBREW_REPOSITORY}"
+ohai "This script will install:"
+echo "${HOMEBREW_PREFIX}/bin/brew"
+echo "${HOMEBREW_PREFIX}/share/doc/homebrew"
+echo "${HOMEBREW_PREFIX}/share/man/man1/brew.1"
+echo "${HOMEBREW_PREFIX}/share/zsh/site-functions/_brew"
+echo "${HOMEBREW_PREFIX}/etc/bash_completion.d/brew"
+echo "${HOMEBREW_REPOSITORY}"
+if [[ -n "${ADD_PATHS_D-}" ]]
+then
+  echo "/etc/paths.d/homebrew"
+fi
 
 # Keep relatively in sync with
-# https://github.com/Homebrew/brew/blob/master/Library/Homebrew/keg.rb
+# https://github.com/Homebrew/brew/blob/HEAD/Library/Homebrew/keg.rb
 directories=(
   bin etc include lib sbin share opt var
   Frameworks
@@ -832,20 +839,11 @@ echo ""
 echo "Mac下镜像飞速安装Homebrew教程（请收藏）：${tty_underline}https://brew.idayer.com/${tty_reset}"
 
 echo ""
-echo "打个小广告"
-echo "欢迎使用[快系列]教程，必出精品，安装有保障！"
-
-cat <<EOS
-
-- ${tty_blue}[快系列]stable-diffusion-webui${tty_reset}: ${tty_underline}https://brew.idayer.com/install/stable-diffusion-webui${tty_reset}
-- ${tty_blue}[快系列]nvm快速安装教程${tty_reset}: ${tty_underline}https://brew.idayer.com/install/nvm-for-nodejs${tty_reset}
-
-EOS
 
 highlight "安装遇到问题，请添加讨论群寻求Homebrew的安装帮助。"
 
 echo ""
-echo "当然也非常欢迎大家${tty_blue}加群${tty_reset}聊天${tty_bold}摸鱼，讨论mac、软件、摄影${tty_reset}，扫码关注公众号：${tty_blue}湖中剑${tty_reset}，回复'brew'加群。"
+echo "当然也非常欢迎大家${tty_blue}加群${tty_reset}聊天${tty_bold}摸鱼，扫码关注公众号：${tty_blue}湖中剑${tty_reset}，回复'brew'加群。"
 
 echo "
 █████████████████████████████████████
@@ -921,12 +919,7 @@ execute_sudo "${CHOWN[@]}" "-R" "${USER}:${GROUP}" "${HOMEBREW_REPOSITORY}"
 
 if ! [[ -d "${HOMEBREW_CACHE}" ]]
 then
-  if [[ -n "${HOMEBREW_ON_MACOS-}" ]]
-  then
-    execute_sudo "${MKDIR[@]}" "${HOMEBREW_CACHE}"
-  else
-    execute "${MKDIR[@]}" "${HOMEBREW_CACHE}"
-  fi
+  execute "${MKDIR[@]}" "${HOMEBREW_CACHE}"
 fi
 if exists_but_not_writable "${HOMEBREW_CACHE}"
 then
@@ -1122,7 +1115,7 @@ ohai "Downloading and installing Homebrew..."
 
   execute "${USABLE_GIT}" "remote" "set-head" "origin" "--auto" >/dev/null
 
-  LATEST_GIT_TAG="$("${USABLE_GIT}" tag --list --sort="-version:refname" | head -n1)"
+  LATEST_GIT_TAG="$("${USABLE_GIT}" -c "column.ui=never" tag --list --sort="-version:refname" | head -n1)"
   if [[ -z "${LATEST_GIT_TAG}" ]]
   then
     abort "Failed to query latest Homebrew/brew Git tag."
